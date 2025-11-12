@@ -4,6 +4,7 @@ import msvcrt
 import shutil
 import panduan
 import sys
+from deck import create_deck
 
 """Material & Needs"""
 #Import Warna
@@ -109,7 +110,7 @@ def new_deck():
     if canceled:
         # kembali ke pemanggil (main menu) tanpa memanggil show_menu di sini
         return None
-
+    
     if deck_name is None or deck_name.strip() == "":
         set_color(BRIGHT | RED)
         print(center_text("Nama deck tidak boleh kosong!"))
@@ -124,5 +125,4 @@ def new_deck():
     set_color(WHITE)
     print()
     wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
-
-    return deck_name
+    create_deck(deck_name)
