@@ -3,6 +3,7 @@ import ctypes
 import msvcrt
 import shutil
 import panduan
+import sys
 
 """Material & Needs"""
 #Import Warna
@@ -63,18 +64,65 @@ def wait_for_enter(prompt=None):
 
 """Deck Baru"""
 def new_deck():
+    """
+    Tampilkan form pembuatan deck.
+    Mengembalikan nama deck (str) bila dibuat, None bila dibatalkan (ESC).
+    """
     clear()
     set_color(BRIGHT | MAGENTA)
     print(center_text("======================================== Buat Deck Baru ========================================"))
     print()
+
     set_color(BRIGHT | WHITE)
-    deck_name = input("Masukkan nama deck baru: ")
-    # Simpan deck baru (logika penyimpanan dapat ditambahkan di sini)
+    print(center_text("Tekan ESC untuk kembali ke menu..."))
     print()
+
+    def input_with_esc(prompt=""):
+        """
+        Baca input dari pengguna, menangkap ESC untuk membatalkan.
+        Mengembalikan (value_str, canceled_bool).
+        """
+        sys.stdout.write(prompt)
+        sys.stdout.flush()
+        buf = ""
+        while True:
+            ch = msvcrt.getwch()  # baca karakter sebagai str
+            if ch == '\r':  # Enter
+                sys.stdout.write("\n")
+                return buf, False
+            if ch == '\x1b':  # ESC
+                sys.stdout.write("\n")
+                return None, True
+            if ch == '\x08':  # Backspace
+                if buf:
+                    buf = buf[:-1]
+                    sys.stdout.write('\b \b')
+                    sys.stdout.flush()
+                continue
+            # tampilkan karakter biasa
+            buf += ch
+            sys.stdout.write(ch)
+            sys.stdout.flush()
+
+    # gunakan prompt sederhana (tidak di-center supaya input terlihat normal)
+    deck_name, canceled = input_with_esc(center_text("Masukkan nama deck baru: "))
+    if canceled:
+        # kembali ke pemanggil (main menu) tanpa memanggil show_menu di sini
+        return None
+
+    if deck_name is None or deck_name.strip() == "":
+        set_color(BRIGHT | RED)
+        print(center_text("Nama deck tidak boleh kosong!"))
+        set_color(WHITE)
+        wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
+        return None
+
+    # Di sini Anda dapat menambahkan logika menyimpan deck ke file / daftar
     set_color(BRIGHT | CYAN)
-    print(f"Deck '{deck_name}' berhasil dibuat!")
     print()
-    set_color(BRIGHT | WHITE)
+    print(center_text(f"Deck '{deck_name}' berhasil dibuat!"))
+    set_color(WHITE)
+    print()
     wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
 
-new_deck()
+    return deck_name
