@@ -4,8 +4,20 @@ import msvcrt
 import shutil
 import json
 import time
-from cards import Card, update_schedule, learning_steps, add_card
 
+from cards import Card, update_schedule, learning_steps, add_card
+from console import (
+    clear,
+    set_color,
+    center_text,
+    wait_for_enter,
+    read_key,
+    get_terminal_size,
+    monitor_terminal_size,
+    wait_for_key_with_resize,
+    min_cols,
+    min_rows,
+)
 
 """Material & Needs"""
 #Import Warna
@@ -22,91 +34,7 @@ BRIGHT = 0x08
 STD_OUTPUT_HANDLE = -11
 h = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 
-"""Fungsi Penting"""
-#Import Size Terminal
-cols, rows = shutil.get_terminal_size()
-
-#Clear Tampilan
-def clear():
-    os.system('cls')
-
-#Ganti Warna
-def set_color(color):
-    ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
-
-#Align Center
-def center_text(text):
-    cols, _ = shutil.get_terminal_size()
-    x = (cols - len(text)) // 2
-    return " " * x + text
-
-# Tunggu hanya tombol Enter (isolasi input)
-def wait_for_enter(prompt=None):
-    if prompt:
-        print(prompt)
-    while msvcrt.kbhit():
-        try:
-            msvcrt.getch()
-        except OSError:
-            break
-    while True:
-        key = msvcrt.getch()
-        if key == b'\r':
-            break
-        if key in (b'\x00', b'\xe0'):
-            try:
-                msvcrt.getch()
-            except OSError:
-                pass
-            continue
-
-# simple key reader for arrows/esc/enter
-def read_key():
-    k = msvcrt.getch()
-    if k in (b'\x00', b'\xe0'):
-        k2 = msvcrt.getch()
-        if k2 == b'H':
-            return 'UP'
-        if k2 == b'P':
-            return 'DOWN'
-        if k2 == b'K':
-            return 'LEFT'
-        if k2 == b'M':
-            return 'RIGHT'
-        return 'OTHER'
-    if k == b'\r':
-        return 'ENTER'
-    if k == b'\x1b':
-        return 'ESC'
-    try:
-        return ('CHAR', k.decode('utf-8', errors='ignore'))
-    except Exception:
-        return ('CHAR', '')
-
-#check terminal size   
-def check_terminal_size(min_cols=84, min_rows=20, enforce=False):
-    """Periksa ukuran terminal; tampilkan peringatan bila kurang."""
-    cols, rows = shutil.get_terminal_size()
-    if cols >= min_cols and rows >= min_rows:
-        return True
-    
-    clear()
-    set_color(RED)
-    print(center_text(f"Ukuran terminal terlalu kecil: {cols}x{rows} (minimal {min_cols}x{min_rows})"))
-    set_color(YELLOW)
-    print(center_text("Beberapa tampilan mungkin terpotong. Perbesar untuk melanjutkan penggunaan."))
-    set_color(WHITE)
-    wait_for_enter(center_text("Tekan Enter untuk mencoba lagi..."))
-    clear()
-    return False
-
-def ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False):
-    while True:
-        if check_terminal_size(min_cols=min_cols, min_rows=min_rows, enforce=enforce):
-            return True
-        else:
-            clear()
-        time.sleep(0.05)
+EXIT_TOKEN = "__EXIT__"
 
 options = [
                 "Ringkasan",
@@ -217,14 +145,29 @@ def card_edit(deck_name):
     print()
     print("     " + "1) Edit Pertanyaan (front)")
     print("     " + "2) Edit Jawaban (back)")
-    print("     " + "3) Hapus Kartu")
-    print("     " + "4) Kembali")
+    print("     " + "3) Reset Waktu Kartu")
+    print("     " + "4) Hapus Kartu")
+    print("     " + "5) Kembali")
     print()
-    choice = input("Pilih opsi (1-4): ")
+    choice = input("Pilih opsi (1-5): ")
     if choice == '1':
         new_front   = input("Masukkan pertanyaan baru: ")
+        if not new_front.strip():
+            set_color(RED)
+            print()
+            print(center_text("Pertanyaan tidak boleh kosong!"))
+            set_color(WHITE)
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            return
     elif choice == '2':
         new_back    = input("Masukkan jawaban baru   : ")
+        if not new_back.strip():
+            set_color(RED)
+            print()
+            print(center_text("Jawaban tidak boleh kosong!"))
+            set_color(WHITE)
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            return
     elif choice == '3':
         confirm = input("Yakin hapus kartu ini? (y/n): ")
         if confirm.lower() == 'y':
@@ -234,8 +177,10 @@ def card_edit(deck_name):
             print()
             print(center_text("Operasi dibatalkan."))
     elif choice == '4':
+        reset_times(deck_name)
+    elif choice == '5':
         return
-    elif choice not in ['1','2','3','4']:
+    elif choice not in ['1','2','3','4','5']:
         set_color(RED)
         print()
         print(center_text("Opsi tidak valid!"))
@@ -263,8 +208,15 @@ def change_name_deck(deck_name):
     print(center_text(f"=== Ganti Nama Deck: {deck_name} ==="))
     set_color(WHITE)
     print()
-    new_name = input("Masukkan nama deck baru: ")\
-        
+    new_name = input("Masukkan nama deck baru: ")
+    if not new_name.strip():
+        set_color(RED)
+        print()
+        print(center_text("Nama deck tidak boleh kosong!"))
+        set_color(WHITE)
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        return
+
     print()
     print(center_text(f"Nama deck telah diubah menjadi: {new_name}"))
     print()
@@ -276,12 +228,14 @@ def manage_deck(avail_decks):
     if avail_decks is None:
         avail_decks = []
 
+    if not monitor_terminal_size():
+        return
+
     selected = 0
     top = 0
+    prev_size = get_terminal_size()
 
     while True:
-        check_terminal_size(min_cols=84, min_rows=20, enforce=False)
-        ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
         clear()
         set_color(BRIGHT | MAGENTA)
         print(center_text("================================== Manajemen Deck =================================="))
@@ -322,8 +276,12 @@ def manage_deck(avail_decks):
             print(center_text(f"...dan {hidden} deck lainnya tidak ditampilkan (maks {MAX_VISIBLE})"))
             set_color(WHITE)
 
-        # read key
-        k = read_key()
+        # read key dengan pemantauan perubahan ukuran
+        k, prev_size = wait_for_key_with_resize(prev_size)
+        if k == EXIT_TOKEN:
+            return
+        if k is None:
+            continue
         if k == 'UP':
             if selected > 0:
                 selected -= 1
@@ -362,10 +320,12 @@ def manage_deck(avail_decks):
                     else:
                         print(center_text(f"  {idx+1}) {opt}"))
 
-                # baca input
-                k = read_key()
-                check_terminal_size(min_cols=84, min_rows=20, enforce=False)
-                ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
+                # baca input dengan pemantauan perubahan ukuran
+                k, prev_size = wait_for_key_with_resize(prev_size)
+                if k == EXIT_TOKEN:
+                    return
+                if k is None:
+                    continue
                 if k == 'UP':
                     if opt_selected > 0:
                         opt_selected -= 1
@@ -377,7 +337,6 @@ def manage_deck(avail_decks):
                 elif k == 'ENTER':
                     choice = opt_selected + 1
                     clear()
-                    ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
                     if choice == 1:
                         deck_summary(deck_name)
                     if choice == 2:

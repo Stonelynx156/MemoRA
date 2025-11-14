@@ -7,10 +7,17 @@ import newdeck
 import importdeck
 import managedeck
 import time
-from deck import load_index
 
-"""Material & Needs"""
-#Import Warna
+from deck import load_index
+from console import (
+    clear, 
+    set_color,
+    center_text,
+    wait_for_enter,
+    read_key,
+    get_terminal_size,
+    monitor_terminal_size)
+
 BLACK = 0x00
 BLUE = 0x01
 GREEN = 0x02
@@ -24,76 +31,6 @@ BRIGHT = 0x08
 STD_OUTPUT_HANDLE = -11
 h = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 
-"""Fungsi Penting"""
-#Import Size Terminal
-cols, rows = shutil.get_terminal_size()
-
-#Clear Tampilan
-def clear():
-    os.system('cls')
-
-#Ganti Warna
-def set_color(color):
-    ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
-
-#Align Center
-def center_text(text):
-    cols, _ = shutil.get_terminal_size()
-    x = (cols - len(text)) // 2
-    return " " * x + text
-
-# baca input keyboard menjadi token terpusat (UP/DOWN/LEFT/RIGHT/ENTER/ESC/TAB/'CHAR')
-def read_key():
-    k = msvcrt.getch()
-    if k in (b'\x00', b'\xe0'):
-        k2 = msvcrt.getch()
-        if k2 == b'H':
-            return 'UP'
-        if k2 == b'P':
-            return 'DOWN'
-        if k2 == b'K':
-            return 'LEFT'
-        if k2 == b'M':
-            return 'RIGHT'
-        return 'OTHER'
-    if k == b'\r':
-        return 'ENTER'
-    if k == b'\x1b':
-        return 'ESC'
-    if k == b'\t':
-        return 'TAB'
-    try:
-        return ('CHAR', k.decode('utf-8', errors='ignore'))
-    except Exception:
-        return ('CHAR', '')
-
-# Tunggu hanya tombol Enter (isolasi input)
-def wait_for_enter(prompt=None):
-    if prompt:
-        print(prompt)
-    # buang semua input yang tertinggal
-    while msvcrt.kbhit():
-        try:
-            msvcrt.getch()
-        except OSError:
-            break
-    # tunggu hingga Enter (CR) ditekan
-    while True:
-        key = msvcrt.getch()
-        if key == b'\r':  # Enter
-            break
-        # jika key adalah prefix untuk key spesial, buang byte berikutnya
-        if key in (b'\x00', b'\xe0'):
-            try:
-                msvcrt.getch()
-            except OSError:
-                pass
-            continue
-        # selain itu, abaikan dan terus tunggu
-
-#Get Available Deck
-
-
 #Bottom Menu
 menu_options = [
         "Panduan Penggunaan",
@@ -102,35 +39,10 @@ menu_options = [
         "Kelola Deck"
     ]
 
-#fungsi cek ukuran terminal
-def check_terminal_size(min_cols=84, min_rows=20, enforce=False):
-    """Periksa ukuran terminal; tampilkan peringatan bila kurang."""
-    cols, rows = shutil.get_terminal_size()
-    if cols >= min_cols and rows >= min_rows:
-        return True
-    
-    clear()
-    set_color(RED)
-    print(center_text(f"Ukuran terminal terlalu kecil: {cols}x{rows} (minimal {min_cols}x{min_rows})"))
-    set_color(YELLOW)
-    print(center_text("Beberapa tampilan mungkin terpotong. Perbesar untuk melanjutkan penggunaan."))
-    set_color(WHITE)
-    wait_for_enter(center_text("Tekan Enter untuk mencoba lagi..."))
-    clear()
-    return False
-
-def ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False):
-    while True:
-        if check_terminal_size(min_cols=min_cols, min_rows=min_rows, enforce=enforce):
-            return True
-        else:
-            clear()
-        time.sleep(0.05)
-
 """Menu Utama"""
 def main_menu(selected_deck, selected_option, deck_mode):
     clear()
-    cols, rows = shutil.get_terminal_size()
+    cols, rows = get_terminal_size()
     avail_decks = sorted(load_index().get("decks", []))
 
     # title 
@@ -140,7 +52,6 @@ def main_menu(selected_deck, selected_option, deck_mode):
     print()
     lines_used = 2  # header + blank
 
-    check_terminal_size(min_cols=84, min_rows=20, enforce=False)
     #deck menu (tampil di bagian atas)
     if avail_decks:
         for i, deck in enumerate (avail_decks):
@@ -209,20 +120,49 @@ def main_menu(selected_deck, selected_option, deck_mode):
 
 """Fungsi utama untuk menjalankan menu."""
 def show_menu():
-    
     selected_deck = 0
     selected_option = 0
-    deck_mode = True  # True = navigasi di deck, False = navigasi di menu
-
-    # loop utama — pastikan terminal ok setiap frame dan juga sebelum menjalankan aksi
+    deck_mode = True
+    prev_size = shutil.get_terminal_size()
+    
     while True:
-        avail_decks = sorted(load_index().get("decks", []))
-        # pastikan ukuran terminal terpenuhi sebelum merender frame
-        ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
-        main_menu(selected_deck, selected_option, deck_mode)
+        #loop cek terminal
+        # cek ukuran terminal
+        if not monitor_terminal_size():
+            return
         
-        # gunakan read_key() yang terpusat
-        key = read_key()
+        cols, rows = get_terminal_size()
+        
+        # redraw jika ukuran berubah
+        if (cols, rows) != prev_size:
+            prev_size = (cols, rows)
+        
+        main_menu(selected_deck, selected_option, deck_mode)
+
+        # tunggu input
+        key = None
+        while True:
+            if msvcrt.kbhit():
+                key = read_key()
+                break
+            
+            cols_now, rows_now = get_terminal_size()
+            if (cols_now, rows_now) != prev_size:
+                break
+            
+            time.sleep(0.1)
+
+        # jika ukuran berubah, kembali ke loop utama
+        if (cols_now, rows_now) != prev_size:
+            continue
+
+        # jika tidak ada input, lanjut polling
+        if key is None:
+            continue
+        #loop selesai
+
+        # proses input
+        avail_decks = sorted(load_index().get("decks", []))
 
         if key == 'UP':
             if deck_mode and avail_decks:
@@ -239,35 +179,34 @@ def show_menu():
         elif key == 'TAB':
             deck_mode = not deck_mode
         elif key == 'ENTER':
-            # pastikan ukuran terminal masih terpenuhi sebelum masuk ke aksi/submenu
-            ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
             clear()
             if deck_mode and avail_decks:
-                #memilih deck
-                set_color(BRIGHT | GREEN)
-                print(center_text(f"Kamu memilih deck: {avail_decks[selected_deck]}"))
+                set_color(BRIGHT | BLUE)
+                print(center_text(f"=== {avail_decks[selected_deck]} ==="))
                 set_color(WHITE)
-                print()
-                print(center_text("Fitur membuka deck akan segera tersedia..."))
-                print()
-                wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
-            elif deck_mode == False:
-                #act 
-                # sebelum tiap aksi/submenu pastikan terminal tetap OK
-                if menu_options[selected_option] == "Buat Deck Baru":
-                    ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
+                print("     " + "Kartu Baru        : ")
+                print("     " + "Kartu Tinjauan    : ")
+                print("     " + "Kartu jatuh Tempo : ")
+
+                print(center_text("Tekan Enter untuk Review Kartu atau ESC untuk kembali ke Menu Utama."))
+                if key == 'ENTER':
+                    print("Fitur Review akan segera hadir!")
+                if key == 'ESC':
+                    continue
+                wait_for_enter()
+
+            elif not deck_mode:
+                opt = menu_options[selected_option]
+                if opt == "Buat Deck Baru":
                     clear()
                     newdeck.new_deck()
-                elif menu_options[selected_option] == "Import Deck":
-                    ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
+                elif opt == "Import Deck":
                     clear()
                     importdeck.import_deck()
-                elif menu_options[selected_option] == "Kelola Deck":
-                    ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
+                elif opt == "Kelola Deck":
                     clear()
                     managedeck.manage_deck(avail_decks)
-                elif menu_options[selected_option] == "Panduan Penggunaan":
-                    ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
+                elif opt == "Panduan Penggunaan":
                     clear()
                     guide.panduan_penggunaan()
                     print()
