@@ -209,13 +209,14 @@ def main_menu(selected_deck, selected_option, deck_mode):
 
 """Fungsi utama untuk menjalankan menu."""
 def show_menu():
-    avail_decks = sorted(load_index().get("decks", []))
+    
     selected_deck = 0
     selected_option = 0
     deck_mode = True  # True = navigasi di deck, False = navigasi di menu
 
     # loop utama — pastikan terminal ok setiap frame dan juga sebelum menjalankan aksi
     while True:
+        avail_decks = sorted(load_index().get("decks", []))
         # pastikan ukuran terminal terpenuhi sebelum merender frame
         ensure_terminal_ok(min_cols=84, min_rows=20, enforce=False)
         main_menu(selected_deck, selected_option, deck_mode)
@@ -250,7 +251,7 @@ def show_menu():
                 print(center_text("Fitur membuka deck akan segera tersedia..."))
                 print()
                 wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
-            else:
+            elif deck_mode == False:
                 #act 
                 # sebelum tiap aksi/submenu pastikan terminal tetap OK
                 if menu_options[selected_option] == "Buat Deck Baru":

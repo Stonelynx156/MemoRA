@@ -2,7 +2,6 @@ import os
 import ctypes
 import msvcrt
 import shutil
-import panduan
 import sys
 from deck import create_deck, load_index
 
