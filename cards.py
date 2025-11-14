@@ -38,37 +38,35 @@ class Card:
             back = back
         )
     
+steps = {1: timedelta(minutes=1),
+             1.5: timedelta(minutes=6),
+             2: timedelta(minutes=10)}
+
 #card scheduling algorithm modified SM-2
 def update_schedule(card: Card, quality: int) -> None:
     today = _now()
     if quality <0 or quality > 3:
         raise ValueError("Quality must be between 0 and 3")
-    if card.repetitions == 0:
-        card.interval = 1
+    if card.step < len(steps):
+        learning_steps(card, quality)
     else:
         if quality == 0:
             learning_steps(card, quality)
         elif quality == 1:
-            card.repetitions += 1
             card.ease_factor -= 0.15
             card.interval = card.interval * 1.2
         elif quality == 2:
-            card.repetitions += 1
             card.interval = card.interval * card.ease_factor
         else:
-            card.repetitions += 1
             card.ease_factor += 0.15
             card.interval = card.interval * card.ease_factor * 1.3
     card.ease_factor = max(1.3, card.ease_factor)
     card.interval = round(card.interval)
 
+#learning session & lapses
 def learning_steps(card: Card, quality: int) -> None:
     now = _now
-    next_show = now + datetime(minute=step)
-    step = card.step()
-    steps = {1: timedelta(minutes=1),
-             1.5: timedelta(minutes=6),
-             2: timedelta(minutes=10)}
+    step = card.step
     if step < len(steps):
         if quality < 0 or quality > 3:
             raise ValueError("qualitty must be between 0 to 3")
@@ -80,6 +78,5 @@ def learning_steps(card: Card, quality: int) -> None:
             step += 1
         elif quality == 3:
             step = 3
-        
-        
-    return 
+            card.interval = 1
+    card.interval = now + datetime(minute=steps[step])
