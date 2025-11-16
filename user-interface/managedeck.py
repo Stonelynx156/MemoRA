@@ -5,6 +5,7 @@ import shutil
 import json
 import time
 
+from deck import delete_deck, rename_deck
 from cards import Card, update_schedule, learning_steps, add_card
 from console import (
     clear,
@@ -212,7 +213,7 @@ def change_name_deck(deck_name):
         set_color(WHITE)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
         return
-
+    rename_deck(deck_name, new_name)
     print()
     print(center_text(f"Nama deck telah diubah menjadi: {new_name}"))
     print()
@@ -363,6 +364,7 @@ def manage_deck(avail_decks):
                         confirm = input("Apakah Anda yakin ingin menghapus deck ini? (y/n): ")
                         if confirm.lower() == 'y':
                             print()
+                            delete_deck(deck_name)
                             print(center_text("Deck telah dihapus."))
                             #hapus deck disini
                             wait_for_enter(center_text("Tekan Enter untuk kembali..."))

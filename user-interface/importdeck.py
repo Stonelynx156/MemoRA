@@ -2,6 +2,9 @@ from nt import get_terminal_size
 import os
 import ctypes
 import json
+import shutil
+from deck import DATA_DIR, _ensure_index, load_index, save_index
+from pathlib import Path
 from tkinter import Tk, filedialog
 
 from console import (
@@ -66,6 +69,13 @@ def import_deck():
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
+            shutil.copy(file_path, DATA_DIR)
+            name = os.path.splitext(os.path.basename(file_path))[0]
+            index = load_index()
+            decks = index.setdefault("decks", [])
+            if name not in decks:
+                decks.append(name)
+                save_index(index)
         except Exception as e:
             set_color(RED)
             print(center_text(f"Gagal membaca/parse JSON: {e}"))

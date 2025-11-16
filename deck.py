@@ -67,7 +67,7 @@ def rename_deck(old_name: str, new_name: str) -> None:
     _ensure_deck_file(old_name)
     list_decks = load_index()
     old = deck_file_path(old_name)
-    new = DATA_DIR / f"{new_name}.json"
+    new = deck_file_path(new_name)
     if old_name in list_decks["decks"]:
         index = list_decks["decks"].index(old_name)
         list_decks["decks"][index] = new_name
