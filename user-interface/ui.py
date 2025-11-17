@@ -156,8 +156,9 @@ def show_menu():
             deck_mode = not deck_mode
         elif key == 'ENTER':
             clear()
-            deck_name = avail_decks[selected_deck]
+            
             if deck_mode and avail_decks:
+                deck_name = avail_decks[selected_deck]
                 review.show_review_deck(deck_name)
             elif not deck_mode:
                 opt = menu_options[selected_option]

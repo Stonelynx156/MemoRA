@@ -1,9 +1,11 @@
 import ctypes
 import deck
 import cards
-from datetime import datetime
+from datetime import datetime,timezone
 import heapq
 import itertools
+from deck import load_deck
+from cards import Card, study_card, card_queue
 
 from console import (
     clear, 
@@ -110,44 +112,50 @@ def display_answer(deck_name, question, answer):
 def review_deck(deck_name):
     prev_size = get_terminal_size()
     show_answer = False
-
+    queue = card_queue(deck_name)
+    first_card = queue[0][2]
+    q = first_card.front
+    a = first_card.back
     # Tampilkan pertanyaan pertama kali
-    display_question(deck_name, question)
+    
+    while queue:
+        _, _, card = heapq.heappop(queue)
+        display_question(deck_name, q)
+        show_answer = False
+        while True:
+            key, prev_size = wait_for_key_with_resize(prev_size)
 
-    while True:
-        key, prev_size = wait_for_key_with_resize(prev_size)
+            if key == EXIT_TOKEN:
+                return
+            
+            if key is None:
+                # Terminal di-resize, refresh tampilan
+                if show_answer:
+                    display_answer(deck_name, card.front, card.back)
+                else:
+                    display_question(deck_name, card.front)
+                continue
 
-        if key == EXIT_TOKEN:
-            return
-        
-        if key is None:
-            # Terminal di-resize, refresh tampilan
-            if show_answer:
-                display_answer(deck_name, question, answer)
+            if not show_answer:
+                # State: menampilkan pertanyaan
+                if key == 'SPASI' or 'ENTER':
+                    show_answer = True
+                    display_answer(deck_name, q, a)
+                elif key == 'ESC':
+                    return
+            
             else:
-                display_question(deck_name, question)
-            continue
-
-        if not show_answer:
-            # State: menampilkan pertanyaan
-            if key == 'SPASI' or 'ENTER':
-                show_answer = True
-                display_answer(deck_name, question, answer)
-            elif key == 'ESC':
-                return
-        
-        else:
-            # State: menampilkan jawaban
-            if key == 'ESC':
-                return
-            elif isinstance(key, tuple) and key[0] == 'CHAR':
-                char = key[1]
-                if char in ['1', '2', '3', '4']:
-                    # Handle rating (bisa ditambahkan logika update card di sini)
-                    quality = int(char)
-                    # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya
-                    show_answer = False
-                    display_question(deck_name, question)
+                # State: menampilkan jawaban
+                if key == 'ESC':
+                    return
+                elif isinstance(key, tuple) and key[0] == 'CHAR':
+                    char = key[1]
+                    if char in ['1', '2', '3', '4']:
+                        # Handle rating (bisa ditambahkan logika update card di sini)
+                        quality = int(char) - 1
+                        study_card(deck_name, queue, None, quality)
+                        # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya
+                        break
 
 
 def review_menu(deck_name):
@@ -155,6 +163,7 @@ def review_menu(deck_name):
     prev_size = get_terminal_size()
 
     while True:
+        cards_raw = load_deck(deck_name)
         clear()
         
         # Header
@@ -169,9 +178,11 @@ def review_menu(deck_name):
         print()
         set_color(WHITE)
         
-        print(center_text(f"Kartu Baru        : "))
-        print(center_text(f"Kartu Tinjau      : "))
-        print(center_text(f"Kartu Jatuh Tempo : "))
+        print(center_text(f"Kartu Baru        : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == True])}"))
+        print(center_text(f"Kartu Tinjau      : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False 
+                                                      and datetime.fromisoformat(c["due"]) <= datetime.now(timezone.utc)])}"))
+        print(center_text(f"Kartu Jatuh Tempo : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False
+                                                      and datetime.fromisoformat(c["due"]) > datetime.now(timezone.utc)])}"))
         print()
 
         set_color(BRIGHT | GREEN)
