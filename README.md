@@ -14,8 +14,8 @@
 
 ---
 
-## 📌 Tentang Festika
-**Festika** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai alternatif **Anki** untuk pengguna yang menginginkan:
+## 📌 Tentang Care Cards
+**Care Cards** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai alternatif **Anki** untuk pengguna yang menginginkan:
 
 - kecepatan  
 - kesederhanaan  
