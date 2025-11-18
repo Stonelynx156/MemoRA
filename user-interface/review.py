@@ -218,7 +218,6 @@ def review_deck(deck_name):
     queue = card_queue(deck_name)
     return
 
-
 def review_menu(deck_name):
     """Menu review deck - menampilkan statistik dan opsi untuk mulai review"""
     prev_size = get_terminal_size()
@@ -258,12 +257,18 @@ def review_menu(deck_name):
 
         # Mulai sesi review
         if key == 'ENTER':
+            print
             review_deck(deck_name)
         elif key == 'ESC':
             return
 
 def show_review_deck(deck_name):
-    """Alias untuk review_menu - untuk kompatibilitas dengan ui.py"""
+    set_color(BRIGHT | BLUE)
+    print(center_text(f"=== {deck_name} ==="))
+    set_color(WHITE)
+    print()
+    new_limits = input(center_text("Masukkan Limit Kartu Baru: "))
+    due_limits = input(center_text("Masukkan Limit Kartu Jatuh Tempo: "))
     review_menu(deck_name)
 
 
