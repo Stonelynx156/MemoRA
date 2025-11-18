@@ -120,7 +120,7 @@ def card_queue(deck_name: str, new_limit: int = None, due_limit: int = None):
             new_cards.append((due_dt, c))
         elif due_dt <= now and c.step >= 4:
             due_cards.append((due_dt, c))
-        elif due_dt <= now and c.step< 4:
+        elif c.step < 4:
             heapq.heappush(session_cards,(due_dt, next(counter), c))
 
     if new_limit is not None:

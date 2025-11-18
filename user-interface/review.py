@@ -37,13 +37,13 @@ quality_options = [
     "[4] Easy"
 ]
 
-def card_status(cards_raw, x):
-    new_card = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == True])
-    review = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False and c.get("step", 0) < 4 ])
-    due = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False
-               and datetime.fromisoformat(c["due"]) <= datetime.now(timezone.utc) and c.get("step", 0) >= 4])
+def card_status(queue):
+    new_card = sum(1 for c in queue if getattr(c[2], "first_time") == True)
+    review = sum(1 for c in queue if getattr(c[2], "first_time") == False and getattr(c[2], "step")<= 4 )
+    due = sum(1 for c in queue if getattr(c[2], "first_time") == False and getattr(c[2], "step")>= 4
+              and datetime.isoformat(getattr(c[2], "due"))<= datetime.now(timezone.utc))
     y = [new_card, review, due]
-    return y[x]
+    return y
 
 def print_spacer_before_bottom_options(lines_used, bottom_section_height):
     """
@@ -59,7 +59,7 @@ def print_spacer_before_bottom_options(lines_used, bottom_section_height):
     for _ in range(blanks_needed):
         print()
 
-def display_question(deck_name, question):
+def display_question(deck_name, question, queue):
     clear()
     set_color(BRIGHT | BLUE)
     print(center_text(f"=== {deck_name} ==="))
@@ -78,10 +78,9 @@ def display_question(deck_name, question):
     print(center_text(instruction))
     set_color(WHITE)
 
-    cards_raw = load_deck(deck_name)
-    new_count = card_status(cards_raw, 0)
-    review_count = card_status(cards_raw, 1)
-    due_count = card_status(cards_raw, 2)
+    new_count = queue[0]
+    review_count = queue[1]
+    due_count = queue[2]
     
     # Buat teks tanpa warna untuk menghitung panjang
     status_text = f"{new_count}   {review_count}   {due_count}"
@@ -161,10 +160,11 @@ def review_deck(deck_name):
         set_color(WHITE)
     
     while queue:
+        status = card_status(queue)
         _, _, card = heapq.heappop(queue)
         q = card.front
         a = card.back
-        display_question(deck_name, q)
+        display_question(deck_name, q, status)
         show_answer = False
         while True:
             key, prev_size = wait_for_key_with_resize(prev_size)
@@ -223,6 +223,7 @@ def review_menu(deck_name):
 
     while True:
         cards_raw = load_deck(deck_name)
+        queue = card_queue(deck_name)
         clear()
         
         # Header
@@ -237,9 +238,9 @@ def review_menu(deck_name):
         print()
         set_color(WHITE)
         
-        print(center_text(f"Kartu Baru        : {card_status(cards_raw, 0)}"))
-        print(center_text(f"Kartu Tinjau      : {card_status(cards_raw, 1)}"))
-        print(center_text(f"Kartu Jatuh Tempo : {card_status(cards_raw, 2)}"))
+        print(center_text(f"Kartu Baru        : {card_status(queue)[0]}"))
+        print(center_text(f"Kartu Tinjau      : {card_status(queue)[1]}"))
+        print(center_text(f"Kartu Jatuh Tempo : {card_status(queue)[2]}"))
         print()
 
         set_color(BRIGHT | GREEN)
