@@ -60,7 +60,6 @@ def update_schedule(card: Card, quality: int) -> None:
         raise ValueError("Quality must be between 0 and 3")
     else:
         if (quality == 0 or card.step < 3) and quality < 3:
-            card.step = 1
             learning_steps(card, quality)
         else:
             card.step = 4
@@ -94,8 +93,8 @@ def learning_steps(card: Card, quality: int) -> None:
         elif quality == 3:
             card.step = 3
         card.interval = 1
-        
-    due = now + steps[card.step]
+    step = min(card.step, 3)
+    due = now + steps[step]
     card.due = due.isoformat()
     card.first_time = False
 
