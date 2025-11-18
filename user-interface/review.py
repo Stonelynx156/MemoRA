@@ -117,8 +117,20 @@ def review_deck(deck_name):
     queue = card_queue(deck_name)
     # Tampilkan pertanyaan pertama kali
     
-    #if not queue:
-        #tambah print jika tidak ada kartu yang bisa direview
+    if not queue:
+        clear()
+        set_color(BRIGHT | BLUE)
+        print(center_text(f"=== {deck_name} ==="))
+        print()
+        print()
+        print()
+        set_color(BRIGHT | CYAN)
+        print(center_text("Selamat! Kamu sudah menyelesaikan dek ini untuk sekarang. "))
+        print(center_text("Kamu bisa mengubah maksimal kartu baru per hari di kelola dek!"))
+        set_color(BRIGHT | YELLOW)
+        print()
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
     
     while queue:
         _, _, card = heapq.heappop(queue)
@@ -165,7 +177,7 @@ def review_deck(deck_name):
                                 card.step += 1
                             
                         elif card.step > 3:
-                            reviewed +=1
+                            #reviewed +=1
                             due = card.due
                             print(card)
                         for idx, stored in enumerate(cards_raw):

@@ -4,6 +4,7 @@ import msvcrt
 import shutil
 import json
 import time
+from tkinter import Tk, filedialog
 
 from deck import delete_deck, rename_deck, load_index, load_deck
 from cards import Card, update_schedule, learning_steps, add_card, reset_due
@@ -248,6 +249,77 @@ def change_name_deck(deck_name):
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
     set_color(WHITE)
 
+#ekspor deck
+def export_deck(deck_name):
+    set_color(BRIGHT | CYAN)
+    print(center_text(f"=== Ekspor Deck: {deck_name} ==="))
+    set_color(WHITE)
+    print()
+    
+    # buka file explorer untuk memilih lokasi penyimpanan
+    def select_save_path(default_name):
+        root = Tk()
+        root.withdraw()  # sembunyikan jendela utama
+        root.attributes('-topmost', True)
+        path = filedialog.asksaveasfilename(
+            title="Simpan deck sebagai JSON",
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            initialfile=default_name,
+            initialdir=os.getcwd()
+        )
+        root.destroy()
+        return path
+    
+    try:
+        # load data deck
+        cards = load_deck(deck_name)
+        deck_data = {"cards": cards}
+        
+        # buka file explorer untuk memilih path
+        default_filename = f"{deck_name}.json"
+        save_path = select_save_path(default_filename)
+        
+        if not save_path:
+            set_color(RED)
+            print()
+            print(center_text("Ekspor dibatalkan."))
+            set_color(BRIGHT | YELLOW)
+            print()
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
+            return
+        
+        # pastikan ekstensi .json
+        if not save_path.lower().endswith('.json'):
+            save_path += '.json'
+        
+        # simpan file
+        with open(save_path, 'w', encoding='utf-8') as f:
+            json.dump(deck_data, f, indent=2, ensure_ascii=False)
+        
+        # sukses
+        set_color(BRIGHT | GREEN)
+        print()
+        print(center_text("Ekspor berhasil!"))
+        set_color(WHITE)
+        print(center_text(f"File disimpan di: {save_path}"))
+        print(center_text(f"Total kartu: {len(cards)}"))
+        set_color(BRIGHT | YELLOW)
+        print()
+        set_color(BRIGHT | YELLOW)
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
+        
+    except Exception as e:
+        set_color(RED)
+        print()
+        print(center_text(f"Gagal mengekspor deck: {e}"))
+        set_color(BRIGHT | YELLOW)
+        print()
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
+
 #hapus deck
 def remove_deck(deck_name):
     while True:
@@ -403,13 +475,7 @@ def manage_deck(avail_decks):
                     if choice == 7:
                         change_name_deck(deck_name)
                     if choice == 8:
-                        set_color(BRIGHT | CYAN)
-                        print(center_text(f"=== Ekspor Deck: {deck_name} ==="))
-                        set_color(WHITE)
-                        print()
-                        print(center_text("Fitur ekspor akan segera tersedia..."))
-                        print()
-                        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+                        export_deck(deck_name)
                     if choice == 9:
                         if remove_deck(deck_name):
                             break

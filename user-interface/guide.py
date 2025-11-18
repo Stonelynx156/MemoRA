@@ -33,6 +33,9 @@ def panduan_penggunaan():
 
     indent = " " * 5
 
+    set_color(RED)
+    print(center_text("User Interface"))
+    set_color(WHITE)
     # Section 1
     print(center_text("1) Navigasi utama"))
     print(indent + "- ↑ / ↓ : Pilih deck")
@@ -73,6 +76,26 @@ def panduan_penggunaan():
     print(indent + "- Aplikasi mencoba mendeteksi Enter/ESC; gunakan keyboard fisik.")
     print(indent + "- Jika dialog file explorer muncul otomatis, itu karena modul import dipanggil.")
     print()
+
+    set_color(RED)
+    print(center_text("Cara Belajar"))
+    set_color(WHITE)
+
+    print(indent + "1. Pastikan sudah mempunyai deck dan kartu yang tersedia")
+    print(indent + "2. Pilih deck yang aktif (Memiliki kartu baru & kartu jatuh tempo) ")
+    print(indent + "3. Mulai sesi belajar dengan menekan enter")
+    print(indent + "4. Pertanyaan dari 1 kartu akan muncul, coba jawab pertanyaan yang ada")
+    print(indent + "5. Apabila sudah menjawab, tekan enter dan lihat jawabannya")
+    print(indent + "6. Pilih kemudahan (1-4), pilih sesuai dengan kemampuan dan perasaan dalam menjawab")
+    print(indent + "7. Kartu akan berganti ke kartu selanjutnya")
+
+    print("Catatan")
+
+    print(indent + "Sesi bisa diberhentikan oleh pengguna dengan menggunakan tmobol ESC")
+    print(indent + "Sesi Review akan selesai apabila semua kartu sudah dirasa mudah (Pilihan 4 ke semua kartu)")
+    print(indent + "Jumlah kartu baru bisa diatur di menu kelola deck")
+    print(indent + "Kartu lama yang sudah direview akan muncul kembali apabila sudah jatuh tempo")
+
     set_color(YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
 
