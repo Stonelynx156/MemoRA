@@ -203,8 +203,6 @@ def review_deck(deck_name):
                         if card.step <= 3:
                             due_dt = card.due if isinstance(card.due, datetime) else datetime.fromisoformat(card.due)
                             heapq.heappush(queue, (due_dt,next(counter), card))
-                            if card.step == 3:
-                                card.step += 1
                             
                         elif card.step > 3:
                             #reviewed +=1
