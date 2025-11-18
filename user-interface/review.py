@@ -37,9 +37,13 @@ quality_options = [
     "[4] Easy"
 ]
 
-question = "Pertanyaan Disini"
-answer = "Jawaban Disini"
-
+def card_status(cards_raw, x):
+    new_card = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == True])
+    review = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False and c.get("step", 0) < 4 ])
+    due = len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False
+               and datetime.fromisoformat(c["due"]) <= datetime.now(timezone.utc) and c.get("step", 0) > 4])
+    y = [new_card, review, due]
+    return y[x]
 def print_spacer_before_bottom_options(lines_used, bottom_section_height):
     """
     Menghitung dan mencetak spacer untuk menempatkan opsi di bagian bawah terminal.
@@ -179,7 +183,6 @@ def review_deck(deck_name):
                         elif card.step > 3:
                             #reviewed +=1
                             due = card.due
-                            print(card)
                         for idx, stored in enumerate(cards_raw):
                             if stored["id"] == card.id:
                                 cards_raw[idx] = card.to_dict()                        
@@ -210,11 +213,9 @@ def review_menu(deck_name):
         print()
         set_color(WHITE)
         
-        print(center_text(f"Kartu Baru        : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == True])}"))
-        print(center_text(f"Kartu Tinjau      : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False 
-                                                      and c.get("step", 0) < 4 ])}"))
-        print(center_text(f"Kartu Jatuh Tempo : {len([Card.from_dict(c)for c in cards_raw if c.get("first_time", 0) == False
-                                                      and datetime.fromisoformat(c["due"]) <= datetime.now(timezone.utc) and c.get("step", 0) > 4])}"))
+        print(center_text(f"Kartu Baru        : {card_status(cards_raw, 0)}"))
+        print(center_text(f"Kartu Tinjau      : {card_status(cards_raw, 1)}"))
+        print(center_text(f"Kartu Jatuh Tempo : {card_status(cards_raw, 2)}"))
         print()
 
         set_color(BRIGHT | GREEN)
