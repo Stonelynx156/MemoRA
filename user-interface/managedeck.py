@@ -60,7 +60,9 @@ def deck_summary(deck_name):
     print("     " + "Interval Rata Rata : ")
     print("     " + "Internal Terbesar  : ")
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
 #tambah kartu baru
 def newcards(deck_name):
@@ -73,16 +75,18 @@ def newcards(deck_name):
         set_color(RED)
         print()
         print(center_text("Pertanyaan tidak boleh kosong!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         return
     back_cards = input("Masukkan jawaban (back)    : ")
     if not back_cards.strip():
         set_color(RED)
         print()
         print(center_text("Jawaban tidak boleh kosong!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         return
     add_card(front_cards, back_cards, deck_name)
     print()
@@ -100,7 +104,9 @@ def card_list(deck_name):
     for c in cards_raw:
         print("     " + f"{c.get("id")} | {c.get("front")} | {c.get("back")}")
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
 #cek informasi kartu
 def card_info(deck_name):
@@ -113,8 +119,9 @@ def card_info(deck_name):
         set_color(RED)
         print()
         print(center_text("ID Kartu tidak valid!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         return
     print()
     print("     " + "Pertanyaan (front) : ")
@@ -124,8 +131,11 @@ def card_info(deck_name):
     print("     " + "EFactor            : ")
     print("     " + "Due Date           : ")
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
+#edit kartu
 def card_edit(deck_name):
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
@@ -137,8 +147,9 @@ def card_edit(deck_name):
         set_color(RED)
         print()
         print(center_text("ID Kartu tidak valid!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         return
     print()
     print("     " + "1) Edit Pertanyaan (front)")
@@ -154,8 +165,9 @@ def card_edit(deck_name):
             set_color(RED)
             print()
             print(center_text("Pertanyaan tidak boleh kosong!"))
-            set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
             return
     elif choice == '2':
         new_back    = input("Masukkan jawaban baru   : ")
@@ -163,17 +175,22 @@ def card_edit(deck_name):
             set_color(RED)
             print()
             print(center_text("Jawaban tidak boleh kosong!"))
-            set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
             return
     elif choice == '3':
         confirm = input("Yakin hapus kartu ini? (y/n): ")
         if confirm.lower() == 'y':
             print()
+            set_color(RED)
             print(center_text("Kartu telah dihapus."))
+            set_color(WHITE)
         else:
             print()
+            set_color(RED)
             print(center_text("Operasi dibatalkan."))
+            set_color(WHITE)
     elif choice == '4':
         reset_times(deck_name)
     elif choice == '5':
@@ -182,10 +199,11 @@ def card_edit(deck_name):
         set_color(RED)
         print()
         print(center_text("Opsi tidak valid!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         
-
+#reset semua kartu
 def reset_times(deck_name):
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Reset Waktu Kartu di: {deck_name} ==="))
@@ -195,13 +213,19 @@ def reset_times(deck_name):
     if confirm.lower() == 'y':
         reset_due(deck_name)
         print()
+        set_color(RED)
         print(center_text("Waktu semua kartu telah direset."))
+        set_color(WHITE)
     else:
         print()
+        set_color(RED)
         print(center_text("Operasi dibatalkan."))
-    print()
+        set_color(WHITE)
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
+#ganti nama deck
 def change_name_deck(deck_name):
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Ganti Nama Deck: {deck_name} ==="))
@@ -212,15 +236,42 @@ def change_name_deck(deck_name):
         set_color(RED)
         print()
         print(center_text("Nama deck tidak boleh kosong!"))
-        set_color(WHITE)
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
         return
     rename_deck(deck_name, new_name)
     print()
     print(center_text(f"Nama deck telah diubah menjadi: {new_name}"))
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
+#hapus deck
+def remove_deck(deck_name):
+    while True:
+        set_color(BRIGHT | RED)
+        print(center_text(f"=== Hapus Deck: {deck_name} ==="))
+        set_color(WHITE)
+        print()
+        confirm = input("Apakah Anda yakin ingin menghapus deck ini? (y/n): ")
+        if confirm.lower() == 'y':
+            print()
+            delete_deck(deck_name)
+            print(center_text("Deck telah dihapus."))
+            set_color(BRIGHT | YELLOW)
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
+            return True  
+        else:
+            print()
+            print(center_text("Operasi dibatalkan."))
+            set_color(BRIGHT | YELLOW)
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
+            return False 
+                        
 """Manajemen Deck"""
 def manage_deck(avail_decks):
     MAX_VISIBLE = 10
@@ -247,13 +298,13 @@ def manage_deck(avail_decks):
         count = len(avail_decks)
         window = min(MAX_VISIBLE, count) if count > 0 else 1
 
-        # keep selected visible
+        #keep selected visible
         if selected < top:
             top = selected
         if selected >= top + window:
             top = selected - window + 1
 
-        # show visible decks
+        #show deck
         if count == 0:
             set_color(BLUE)
             print(center_text("  (Belum ada deck)"))
@@ -268,7 +319,7 @@ def manage_deck(avail_decks):
                 else:
                     print(center_text(f"  • {name}"))
 
-        # hint if hidden
+        #hint if hidden
         hidden = max(0, count - window)
         if hidden > 0:
             print()
@@ -276,7 +327,7 @@ def manage_deck(avail_decks):
             print(center_text(f"...dan {hidden} deck lainnya tidak ditampilkan (maks {MAX_VISIBLE})"))
             set_color(WHITE)
 
-        # read key dengan pemantauan perubahan ukuran
+        #input key
         k, prev_size = wait_for_key_with_resize(prev_size)
         if k == EXIT_TOKEN:
             return
@@ -297,10 +348,10 @@ def manage_deck(avail_decks):
                 print(center_text("Tidak ada deck untuk dikelola. Tekan Enter untuk kembali..."))
                 set_color(WHITE)
                 wait_for_enter()
-                continue
-            # simple submenu placeholder (tidak langsung kembali)
+                return
+
             deck_name = avail_decks[selected]
-            # submenu: pilih opsi dengan arrow ↑/↓ dan Enter untuk konfirmasi
+            #submenu ketika sudah pilih deck
             opt_selected = 0
             while True:
                 clear()
@@ -311,7 +362,7 @@ def manage_deck(avail_decks):
                 print(center_text("Gunakan ↑/↓ untuk pilih, Enter untuk konfirmasi, ESC untuk kembali"))
                 print()
 
-                # tampilkan opsi dengan highlight pada opt_selected
+                #highlight ketika dipilih
                 for idx, opt in enumerate(options):
                     if idx == opt_selected:
                         set_color(BRIGHT | GREEN)
@@ -320,7 +371,7 @@ def manage_deck(avail_decks):
                     else:
                         print(center_text(f"  {idx+1}) {opt}"))
 
-                # baca input dengan pemantauan perubahan ukuran
+                #input
                 k, prev_size = wait_for_key_with_resize(prev_size)
                 if k == EXIT_TOKEN:
                     return
@@ -360,23 +411,8 @@ def manage_deck(avail_decks):
                         print()
                         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
                     if choice == 9:
-                        set_color(BRIGHT | RED)
-                        print(center_text(f"=== Hapus Deck: {deck_name} ==="))
-                        set_color(WHITE)
-                        print()
-                        confirm = input("Apakah Anda yakin ingin menghapus deck ini? (y/n): ")
-                        if confirm.lower() == 'y':
-                            print()
-                            delete_deck(deck_name)
-                            print(center_text("Deck telah dihapus."))
-                            #hapus deck disini
-                            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-                            break  # kembali ke daftar deck setelah hapus
-                        else:
-                            print()
-                            print(center_text("Operasi dibatalkan."))
-                            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+                        if remove_deck(deck_name):
+                            break
 
                 else:
-                    # ignore other keys
                     continue

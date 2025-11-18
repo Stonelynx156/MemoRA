@@ -52,43 +52,81 @@ def import_deck():
         file_path = select_json_file()
         if not file_path:
             set_color(RED)
+            print()
             print(center_text("Tidak ada file dipilih."))
-            set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
+            print()
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
             return None
 
         # pastikan ekstensi .json
         if not file_path.lower().endswith('.json'):
             set_color(RED)
+            print()
             print(center_text("File bukan format .json"))
-            set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
+            print()
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
             return None
 
         # coba baca dan parse JSON
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            shutil.copy(file_path, DATA_DIR)
+            
+            # ambil nama deck dari nama file
             name = os.path.splitext(os.path.basename(file_path))[0]
+            
+            # cek apakah nama deck sudah ada
             index = load_index()
             decks = index.setdefault("decks", [])
+            
+            if name in decks:
+                # tampilkan peringatan jika deck sudah ada
+                set_color(BRIGHT | YELLOW)
+                print()
+                print(center_text(f"Peringatan: Deck dengan nama '{name}' sudah ada!"))
+                set_color(WHITE)
+                print()
+                print(center_text("Apakah Anda ingin mengganti deck yang sudah ada?"))
+                print()
+                overwrite = input(center_text("Lanjutkan? (y/n): ")).strip().lower()
+                
+                if overwrite != 'y':
+                    set_color(RED)
+                    print()
+                    print(center_text("Import dibatalkan."))
+                    set_color(BRIGHT | YELLOW)
+                    print()
+                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+                    set_color(WHITE)
+                    return None
+            
+            # copy file dan update index
+            shutil.copy(file_path, DATA_DIR)
             if name not in decks:
                 decks.append(name)
                 save_index(index)
         except Exception as e:
             set_color(RED)
+            print()
             print(center_text(f"Gagal membaca/parse JSON: {e}"))
-            set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
             return None
 
         # sukses - tampilkan ringkasan singkat
         set_color(BRIGHT | GREEN)
+        print()
         print(center_text("Import berhasil!"))
         set_color(WHITE)
         print(center_text(f"File: {os.path.basename(file_path)}"))
+        set_color(BRIGHT | YELLOW)
         print()
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
+        set_color(WHITE)
 
         return data
