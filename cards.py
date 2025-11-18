@@ -58,10 +58,8 @@ def update_schedule(card: Card, quality: int) -> None:
 
     if quality <0 or quality > 3:
         raise ValueError("Quality must be between 0 and 3")
-    #if card.step < len(steps):
-        #learning_steps(card, quality)
     else:
-        if quality == 0:
+        if quality == 0 or card.step == 1:
             card.step = 1
             learning_steps(card, quality)
         elif quality == 1:
@@ -74,7 +72,9 @@ def update_schedule(card: Card, quality: int) -> None:
             card.interval = card.interval * card.ease_factor * 1.3
         card.ease_factor = max(1.3, card.ease_factor)
         card.interval = round(card.interval)
-        card.due = now + timedelta(days=card.interval)
+        due = now + timedelta(days=card.interval)
+        card.due = due.isoformat()
+    card.first_time = False
 
 #learning session & lapses
 def learning_steps(card: Card, quality: int) -> None:
@@ -91,9 +91,10 @@ def learning_steps(card: Card, quality: int) -> None:
             card.step += 2
         elif quality == 3:
             card.step = 3
-            card.interval = 1
+        card.interval = 1
         
-    card.due = now + steps[card.step]
+    due = now + steps[card.step]
+    card.due = due.isoformat()
     card.first_time = False
 
 #add new card into decks
@@ -142,5 +143,8 @@ def reset_due(deck_name: str):
     for c in cards:
         c.due = now.isoformat()
         c.first_time = True
+        c.interval = 1
+        c.step = 1
+        c.ease_factor = 2.5
     cards = [Card.to_dict(c) for c in cards]
     save_deck(deck_name, cards)

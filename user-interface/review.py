@@ -158,16 +158,19 @@ def review_deck(deck_name):
                         if card.step <= 3:
                             due_dt = card.due if isinstance(card.due, datetime) else datetime.fromisoformat(card.due)
                             heapq.heappush(queue, (due_dt,next(counter), card))
-                            print(card)
+                            
                         elif card.step > 3:
                             reviewed +=1
+                            due = card.due
+                            card.due = due.isoformat()
+                            print(card)
                         for idx, stored in enumerate(cards_raw):
                             if stored["id"] == card.id:
-                                cards_raw[idx] = card.to_dict()
-                                break
+                                cards_raw[idx] = card.to_dict()                        
                         save_deck(deck_name, cards_raw)
-                        # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya
                         break
+                        # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya
+    return
 
 
 def review_menu(deck_name):
