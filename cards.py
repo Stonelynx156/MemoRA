@@ -106,16 +106,31 @@ def add_card(front, back, deck_name: str):
     save_deck(deck_name, deck)
 
 #start studying session
-def card_queue(deck_name: str):
+def card_queue(deck_name: str, new_limit: int = None, due_limit: int = None):
     cards_raw = load_deck(deck_name)
     cards = [Card.from_dict(c) for c in cards_raw]
     now = _now()
+    new_cards = []
+    due_cards = []
 
     session_cards = []
     for c in cards:
         due_dt = datetime.fromisoformat(c.due)
-        if due_dt <= now or c.step < 4:
-            heapq.heappush(session_cards, (due_dt, next(counter),c))
+        if c.step == 1 and c.first_time == True:
+            new_cards.append((due_dt, c))
+        elif due_dt <= now and c.step >= 4:
+            due_cards.append((due_dt, c))
+        elif c.step < 4:
+            heapq.heappush(session_cards,(due_dt, next(counter), c))
+
+    if new_limit is not None:
+        new_cards = new_cards[:new_limit]
+    if due_limit is not None:
+        due_cards = due_cards[:due_limit]
+
+    for due_dt, c in new_cards + due_cards:
+        heapq.heappush(session_cards,(due_dt, next(counter), c))
+
     return session_cards
 
 def study_card(deck_name, session_cards, limit, quality):
