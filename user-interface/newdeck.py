@@ -73,9 +73,11 @@ def new_deck():
     print(center_text("================================== Buat Deck Baru =================================="))
     print()
 
-    set_color(BRIGHT | WHITE)
+    set_color(BRIGHT | YELLOW)
     print(center_text("Tekan ESC untuk kembali ke menu..."))
+    set_color(WHITE)
     print()
+
 
     def input_with_esc(prompt=""):
         """
@@ -114,23 +116,26 @@ def new_deck():
     if deck_name is None or deck_name.strip() == "":
         set_color(BRIGHT | RED)
         print(center_text("Nama deck tidak boleh kosong!"))
-        set_color(WHITE)
+        print()
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
+        set_color(WHITE)
         return None
     if deck_name in existing_decks:
         set_color(BRIGHT | RED)
-        print()
         print(center_text(f"Deck dengan nama '{deck_name}' sudah ada!"))
-        set_color(WHITE)
+        print()
+        set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
+        set_color(WHITE)
         return None
 
     # Di sini Anda dapat menambahkan logika menyimpan deck ke file / daftar
     create_deck(deck_name)
     set_color(BRIGHT | CYAN)
-    print()
     print(center_text(f"Deck '{deck_name}' berhasil dibuat!"))
     set_color(WHITE)
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
-    
+    set_color(WHITE)
