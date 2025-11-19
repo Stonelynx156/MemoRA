@@ -8,7 +8,7 @@ from tkinter import Tk, filedialog
 
 from datetime import datetime, timezone
 from deck import delete_deck, rename_deck, load_index, load_deck, save_deck
-from cards import Card, card_status, add_card, reset_due, human_date
+from cards import Card, add_card, reset_due, human_date
 from console import (
     clear,
     read_key,
@@ -60,8 +60,8 @@ def deck_summary(deck_name):
     print("     " + f"Total Kartu        : {len(deck)}")
     print("     " + f"Kartu baru         : {len([Card.from_dict(c) for c in deck if c.get("first_time") == True ])}")
     print("     " + f"kartu jatuh tempo  : {len([Card.from_dict(c) for c in deck if c.get("first_time") == False 
-                                                 and datetime.isoformat(c.get("due") <= datetime.now(timezone.utc))])}")
-    print("     " + f"Jadwal Terdekat    : {(datetime.fromisoformat(min([Card.from_dict(c).due for c in deck]))).strftime("%d/%B/%Y - %H:%M UTC")}")
+                                                 and datetime.fromisoformat(c.get("due")) <= datetime.now(timezone.utc)])}")
+    print("     " + f"Jadwal Terdekat    : {human_date(min([Card.from_dict(c).due for c in deck]))}")
     print("     " + f"Interval Rata Rata : {sum([Card.from_dict(c).interval for c in deck]) / len([Card.from_dict(c) for c in deck])}")
     print("     " + f"Interval Terbesar  : {max([Card.from_dict(c).interval for c in deck])}")
     print()
@@ -203,6 +203,10 @@ def card_edit(deck_name):
         clear()
         set_color(BRIGHT | CYAN)
         print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
+        set_color(WHITE)
+        print()
+        set_color(BRIGHT | YELLOW)
+        print(center_text("Tekan ESC untuk kembali..."))
         set_color(WHITE)
         print()
         for idx, opt in enumerate(card_edit_options):
