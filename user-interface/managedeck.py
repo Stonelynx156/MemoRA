@@ -146,17 +146,17 @@ def card_info(deck_name):
 #edit kartu
 def card_edit(deck_name):
     prev_size = get_terminal_size()
-    cards_raw = [Card.from_dict(c) for c in load_deck(deck_name)]
+    cards = [Card.from_dict(c) for c in load_deck(deck_name)]
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
     card_id = input("Masukkan ID Kartu yang akan diedit: ")
     #validasi input ID kartu
-    for c in cards_raw:
+    for c in cards:
         if c.id == card_id:
             card = c
-    if card_id not in (c.id for c in cards_raw):
+    if card_id not in (c.id for c in cards):
         set_color(RED)
         print()
         print(center_text("ID Kartu tidak valid!"))
@@ -168,13 +168,17 @@ def card_edit(deck_name):
     opt_selected = 0
     card_edit_options = [
         "1) Edit Pertanyaan (front)",
-        "2. Edit Jawaban (back)",
+        "2) Edit Jawaban (back)",
         "3) Reset Waktu Kartu",
         "4) Hapus Kartu",    
         "5) Kembali",
     ]
 
     while True:
+        cards = [Card.from_dict(c) for c in load_deck(deck_name)]
+        for c in cards:
+            if c.id == card_id:
+                card = c
         clear()
         set_color(BRIGHT | CYAN)
         print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
@@ -209,7 +213,7 @@ def card_edit(deck_name):
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
-                print("     Pertanyaan Lama: ")
+                print(f"     Pertanyaan Lama: {card.front}")
                 #print pertanyaan lama kartu
                 print()
                 new_front = input("     Masukkan Pertanyaan Baru: ")
@@ -217,14 +221,11 @@ def card_edit(deck_name):
                     set_color(RED)
                     print()
                     print(center_text("Pertanyaan tidak boleh kosong!"))
-                    set_color(BRIGHT | YELLOW)
-                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-                    set_color(WHITE)
-                    return
-                card.front = new_front
-                cards = [Card.to_dict(c)for c in cards_raw]
-                save_deck(deck_name, cards)
-                print(f"     Pertanyaan telah diubah menjadi : {new_front}")
+                if new_front.strip():    
+                    card.front = new_front
+                    cards = [Card.to_dict(c)for c in cards]
+                    save_deck(deck_name, cards)
+                    print(f"     Pertanyaan telah diubah menjadi : {new_front}")
                 set_color(BRIGHT | YELLOW)
                 wait_for_enter(center_text("Tekan Enter untuk kembali..."))
                 set_color(WHITE)
@@ -233,64 +234,64 @@ def card_edit(deck_name):
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
-                print("     Jawaban Lama: ")
+                print(f"     Jawaban Lama: {card.back}")
                 #print Jawaban lama kartu
                 new_back    = input("     Masukkan jawaban baru   : ")
                 if not new_back.strip():
                     set_color(RED)
                     print()
                     print(center_text("Jawaban tidak boleh kosong!"))
-                    set_color(BRIGHT | YELLOW)
-                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-                    set_color(WHITE)
-                    return
-                card.back = new_back
-                cards = [Card.to_dict(c)for c in cards_raw]
-                save_deck(deck_name, cards)
-                print(f"     Pertanyaan telah diubah menjadi : {new_front}")
+                if new_back.strip():
+                    card.back = new_back
+                    cards = [Card.to_dict(c)for c in cards]
+                    save_deck(deck_name, cards)
+                    print(f"     Pertanyaan telah diubah menjadi : {new_back}")
                 set_color(BRIGHT | YELLOW)
                 wait_for_enter(center_text("Tekan Enter untuk kembali..."))
                 set_color(WHITE)
-            elif choice == '3':
+            elif choice == 3:
                 set_color(BRIGHT | CYAN)
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
-                confirm = input("     Yakin reset waktu kartu ini? (y/n)")
-                if confirm.lower == 'y':
+                confirm = input("     Yakin reset waktu kartu ini? (y/n): ")
+                if confirm.lower() == 'y':
                     card.due = datetime.now(timezone.utc).isoformat()
                     card.first_time = True
                     card.interval = 1
                     card.step = 1
                     card.ease_factor = 2.5
-                    cards = [Card.to_dict(c)for c in cards_raw]
+                    cards = [Card.to_dict(c)for c in cards]
                     save_deck(deck_name, cards)
-                    print(center_text("Waktu telah direset"))
-                    set_color(BRIGHT | YELLOW)
-                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-                    set_color(WHITE)
-                    return
+                    print(center_text("Waktu telah direset")) 
                 else:
                     print()
                     set_color(RED)
                     print(center_text("Operasi dibatalkan."))
                     set_color(WHITE)
-                    set_color(BRIGHT | YELLOW)
-                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-                    set_color(WHITE)
-                    return
+                set_color(BRIGHT | YELLOW)
+                wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+                set_color(WHITE)
+                    
             
-            elif choice == '4':
+            elif choice == 4:
                 set_color(BRIGHT | CYAN)
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
                 confirm = input("     Yakin hapus kartu ini? (y/n): ")
                 if confirm.lower() == 'y':
+                    cards.remove(card)
+                    cards = [Card.to_dict(c)for c in cards]
+                    save_deck(deck_name, cards)
                     print()
                     set_color(RED)
                     print(center_text("Kartu telah dihapus."))
                     set_color(WHITE)
+                    set_color(BRIGHT | YELLOW)
+                    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+                    set_color(WHITE)
+                    return
                 else:
                     print()
                     set_color(RED)
@@ -299,9 +300,10 @@ def card_edit(deck_name):
                     set_color(BRIGHT | YELLOW)
                     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
                     set_color(WHITE)
-                    return
+                    
             elif choice == '5':
-                return
+                break
+                
 
 
 #reset semua kartu
