@@ -3,7 +3,7 @@ import ctypes
 import msvcrt
 import shutil
 import time
-from deck import load_index
+import sys
 
 """Material & Needs"""
 #Import Warna
@@ -21,21 +21,18 @@ STD_OUTPUT_HANDLE = -11
 h = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 
 """Fungsi Penting"""
-#Clear Tampilan
 def clear():
     os.system('cls')
 
-#Ganti Warna
 def set_color(color):
     ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
 
-#Align Center
 def center_text(text):
     cols, _ = shutil.get_terminal_size()
     x = (cols - len(text)) // 2
     return " " * x + text
 
-# baca input keyboard menjadi token terpusat (UP/DOWN/LEFT/RIGHT/ENTER/ESC/TAB/'CHAR')
+# baca input keyboard menjadi token terpusat 
 def read_key():
     k = msvcrt.getch()
     if k in (b'\x00', b'\xe0'):
@@ -57,6 +54,8 @@ def read_key():
         return 'TAB'
     if k == b' ':
         return 'SPASI'
+    if k == b'\x08':
+        return 'BACKSPACE'
     try:
         return ('CHAR', k.decode('utf-8', errors='ignore'))
     except Exception:
@@ -75,7 +74,7 @@ def wait_for_enter(prompt=None):
     # tunggu hingga Enter (CR) ditekan
     while True:
         key = msvcrt.getch()
-        if key == b'\r':  # Enter
+        if key == b'\r':  
             break
         # jika key adalah prefix untuk key spesial, buang byte berikutnya
         if key in (b'\x00', b'\xe0'):
@@ -86,7 +85,6 @@ def wait_for_enter(prompt=None):
             continue
         # selain itu, abaikan dan terus tunggu
 
-#fungsi cek ukuran terminal
 def get_terminal_size():
     cols, rows = shutil.get_terminal_size()
     return cols, rows
@@ -146,3 +144,26 @@ def print_spacer_before_bottom_options(lines_used, bottom_section_height):
     
     for _ in range(blanks_needed):
         print()
+
+def input_with_esc(prompt=""):
+        
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+    buf = ""
+    while True:
+        key = read_key() 
+        if key == 'ENTER':  
+            sys.stdout.write("\n")
+            return buf, False
+        if key == 'ESC':  
+                sys.stdout.write("\n")
+                return None, True
+        if key == 'BACKSPACE':  
+                if buf:
+                    buf = buf[:-1]
+                    sys.stdout.write('\b \b')
+                    sys.stdout.flush()
+                continue
+        buf += key
+        sys.stdout.write(key)
+        sys.stdout.flush()
