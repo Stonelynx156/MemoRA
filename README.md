@@ -1,10 +1,5 @@
-<!-- Banner / Header -->
-<p align="center">
-  <img src="https://via.placeholder.com/1200x300.png?text=Festika+-+CLI+Flashcard+System" width="100%">
-</p>
-
-<h1 align="center">📚 Festika — CLI Flashcard System</h1>
-<p align="center"><b>Alternatif Anki yang lebih cepat, ringan, dan efisien langsung dari terminal.</b></p>
+<h1 align="center">📚 Memora — CLI Flashcard System</h1>
+<p align="center"><b>Aplikasi untuk memudah mengigat, ringan, dan efisien langsung dari terminal.</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-CLI-blue">
@@ -14,8 +9,8 @@
 
 ---
 
-## 📌 Tentang Care Cards
-**Care Cards** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai alternatif **Anki** untuk pengguna yang menginginkan:
+## 📌 Tentang Memora
+**Memora** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program belajar kamu yang menginginkan:
 
 - kecepatan  
 - kesederhanaan  
@@ -26,24 +21,21 @@ Aplikasi ini sangat cocok untuk programmer, pengguna terminal, dan siapa pun yan
 
 ---
 
-# ⭐ Keunggulan Festika Dibanding Anki Normal
+# ⭐ Keunggulan Memora 
 
 ## ⚡ 1. Super Ringan — Tidak Butuh GUI Sama Sekali
-Anki memakai QT5 yang agak berat untuk device low-end.  
-**Festika berjalan full di terminal**, cocok untuk:
+**Memora berjalan full di terminal**, cocok untuk:
 
-- PC low-spec  
-- WSL  
-- Server headless  
-- Raspberry Pi  
+- PC Windows low-spec
+- Pengguna yang suka tampilan sederhana  
+
 
 ➡ *Tidak ada loading GUI, langsung jalan.*
 
 ---
 
 ## 🔥 2. Akses Sangat Cepat — Keyboard-Only Navigation
-Tidak ada klik mouse seperti Anki.  
-Festika mendukung navigasi super cepat:
+Memora mendukung navigasi super cepat:
 
 - Arrow keys  
 - Enter  
@@ -54,8 +46,8 @@ Festika mendukung navigasi super cepat:
 ---
 
 ## 🧪 3. Fleksibel dan Mudah Dikustomisasi
-Anki memerlukan add-on untuk mengubah UI/UX.  
-Festika:
+Tidak perlu add-on untuk mengubah tampilan
+Memora:
 
 - UI seluruhnya berbasis teks  
 - Bisa dimodifikasi lewat kode Python  
@@ -67,10 +59,10 @@ Festika:
 ---
 
 ## 🧱 4. Struktur Data Sederhana
-Anki menggunakan SQLite `.apkg` yang kompleks.  
-Festika memakai:
+Tidak menggunakan struktur data yang kompleks
+Memora memakai:
 
-- JSON / TXT format sederhana  
+- JSON format sederhana  
 - Mudah dibaca  
 - Bisa langsung di-edit dan commit ke Git  
 
@@ -79,8 +71,8 @@ Festika memakai:
 ---
 
 ## 📈 5. Belajar Tanpa Distraksi Visual
-Anki memiliki banyak UI element: card, deck list, popup, menu.  
-Festika hanya fokus pada:
+Tidak memiliki tampilan visual yang dapat mengganggu belajar
+Memora hanya fokus pada:
 
 - pertanyaan  
 - jawaban  
@@ -92,7 +84,7 @@ Festika hanya fokus pada:
 ---
 
 ## 💻 6. Terminal-Aware + Responsive TUI
-Festika mendukung fitur yang bahkan Anki tidak miliki:
+Memora mendukung fitur yang bahkan Anki tidak miliki:
 
 - auto detect ukuran terminal  
 - spacer vertikal dinamis  
@@ -104,7 +96,7 @@ Festika mendukung fitur yang bahkan Anki tidak miliki:
 ---
 
 ## 🔒 7. Tidak Ada Telemetry
-Festika **100% tanpa tracking**, tanpa internet, tanpa data usage.
+Memora **100% tanpa tracking**, tanpa internet, tanpa data usage.
 
 ➡ *Privasi penuh.*
 
@@ -123,7 +115,8 @@ python main.py
 
 # ✨ Fitur Utama
 - Membuat deck
-- Menambah kartu baru
+- Keloka Deck
+- Import Deck
 - Review kartu (SM-2 sederhana)
 - TUI dengan warna
 - Auto terminal-size check
@@ -134,8 +127,8 @@ python main.py
 
 # 📦 Instalasi
 ```
-git clone https://github.com/username/festika
-cd festika
+git clone https://github.com/Stonelynx156/festika/tree/main
+cd Memora
 python main.py
 ```
 
@@ -144,39 +137,31 @@ python main.py
 # ▶️ Cara Menjalankan
 ```
 python main.py
+atau
+py main.py
 ```
 
 ---
 
 # 🧩 Struktur Folder
 ```
-festika/
-│── core/
+Memora/
+│── utils/
 │   ├── deck.py
-│   ├── card.py
-│   └── scheduler.py
+│   └── card.py
 │── ui/
-│   ├── tui.py
-│   ├── color.py
-│   └── spacer.py
+│   ├── ui.py
+│   ├── importdeck.py
+│   ├── managedeck.py
+│   ├── newdeck.py
+│   ├── review.py
+│   ├── guide.py
+│   └── console.py
 │── data/
 │   └── decks.json
 │── main.py
 │── README.md
 ```
-
----
-
-# 🤝 Kontribusi
-Pull request dipersilakan!  
-Jika ingin menambah fitur — misalnya:
-
-- TUI lebih canggih  
-- Mode review baru  
-- Integrasi cloud  
-- Export/import deck  
-
-Buat issue dan mari diskusikan!
 
 ---
 
