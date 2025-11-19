@@ -20,7 +20,7 @@ def human_date(iso_ts: str) -> str:
         dt = datetime.fromisoformat(iso_ts)
     except ValueError:
         return iso_ts
-    return dt.astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    return dt.astimezone().strftime("%d-%m-%Y %H:%M:%S")
 
 @dataclass
 class Card:

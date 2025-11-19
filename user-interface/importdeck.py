@@ -5,6 +5,7 @@ import json
 import shutil
 from deck import DATA_DIR, _ensure_index, load_index, save_index
 from pathlib import Path
+from cards import reset_due
 from tkinter import Tk, filedialog
 
 from console import (
@@ -128,5 +129,5 @@ def import_deck():
         print()
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
         set_color(WHITE)
-
+        reset_due(name)
         return data

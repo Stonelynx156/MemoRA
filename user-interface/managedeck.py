@@ -7,8 +7,8 @@ import time
 from tkinter import Tk, filedialog
 
 from datetime import datetime, timezone
-from deck import delete_deck, rename_deck, load_index, load_deck
-from cards import Card, card_status, add_card, reset_due
+from deck import delete_deck, rename_deck, load_index, load_deck, save_deck
+from cards import Card, card_status, add_card, reset_due, human_date
 from console import (
     clear,
     set_color,
@@ -59,7 +59,6 @@ def deck_summary(deck_name):
     print("     " + f"Kartu baru         : {len([Card.from_dict(c) for c in deck if c.get("first_time") == True ])}")
     print("     " + f"kartu jatuh tempo  : {len([Card.from_dict(c) for c in deck if c.get("first_time") == False 
                                                  and datetime.isoformat(c.get("due") <= datetime.now(timezone.utc))])}")
-    print("     " + "Kartu tertunda     : ")
     print("     " + f"Jadwal Terdekat    : {(datetime.fromisoformat(min([Card.from_dict(c).due for c in deck]))).strftime("%d/%B/%Y - %H:%M UTC")}")
     print("     " + f"Interval Rata Rata : {sum([Card.from_dict(c).interval for c in deck]) / len([Card.from_dict(c) for c in deck])}")
     print("     " + f"Interval Terbesar  : {max([Card.from_dict(c).interval for c in deck])}")
@@ -114,12 +113,16 @@ def card_list(deck_name):
 
 #cek informasi kartu
 def card_info(deck_name):
+    cards_raw = load_deck(deck_name)
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Informasi Kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
     card_id = input("Masukkan ID Kartu: ")
-    if not card_id.isdigit():
+    for c in cards_raw:
+        if c.get("id") == card_id:
+            card = c
+    if card_id not in (c.get("id") for c in cards_raw):
         set_color(RED)
         print()
         print(center_text("ID Kartu tidak valid!"))
@@ -128,12 +131,12 @@ def card_info(deck_name):
         set_color(WHITE)
         return
     print()
-    print("     " + "Pertanyaan (front) : ")
-    print("     " + "Jawaban (back)     : ")
-    print("     " + "Level              : ")
-    print("     " + "Interval           : ")
-    print("     " + "EFactor            : ")
-    print("     " + "Due Date           : ")
+    print("     " + f"Pertanyaan (front) : {card.get("front")}")
+    print("     " + f"Jawaban (back)     : {card.get("back")}")
+    print("     " + f"Interval           : {card.get("interval")}")
+    print("     " + f"EFactor            : {card.get("ease_factor")}")
+    print("     " + f"Due Date           : {human_date(card.get("due"))}")
+    print("     " + f"Kartu Baru         : {card.get("first_time")}")
     print()
     set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
@@ -141,13 +144,17 @@ def card_info(deck_name):
 
 #edit kartu
 def card_edit(deck_name):
+    cards_raw = [Card.from_dict(c) for c in load_deck(deck_name)]
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
     card_id = input("Masukkan ID Kartu yang akan diedit: ")
     #validasi input ID kartu
-    if not card_id.isdigit():
+    for c in cards_raw:
+        if c.id == card_id:
+            card = c
+    if card_id not in (c.id for c in cards_raw):
         set_color(RED)
         print()
         print(center_text("ID Kartu tidak valid!"))
@@ -158,8 +165,8 @@ def card_edit(deck_name):
     print()
     print("     " + "1) Edit Pertanyaan (front)")
     print("     " + "2) Edit Jawaban (back)")
-    print("     " + "3) Reset Waktu Kartu")
-    print("     " + "4) Hapus Kartu")
+    print("     " + "3) Hapus Kartu")
+    print("     " + "4) Reset Waktu Kartu")
     print("     " + "5) Kembali")
     print()
     choice = input("Pilih opsi (1-5): ")
@@ -173,6 +180,13 @@ def card_edit(deck_name):
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
             set_color(WHITE)
             return
+        card.front = new_front
+        cards = [Card.to_dict(c)for c in cards_raw]
+        save_deck(deck_name, cards)
+        print(f"Pertanyaan telah diubah menjadi : {new_front}")
+        set_color(BRIGHT | YELLOW)
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
     elif choice == '2':
         new_back    = input("Masukkan jawaban baru   : ")
         if not new_back.strip():
@@ -183,6 +197,13 @@ def card_edit(deck_name):
             wait_for_enter(center_text("Tekan Enter untuk kembali..."))
             set_color(WHITE)
             return
+        card.back = new_back
+        cards = [Card.to_dict(c)for c in cards_raw]
+        save_deck(deck_name, cards)
+        print(f"Pertanyaan telah diubah menjadi : {new_front}")
+        set_color(BRIGHT | YELLOW)
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
     elif choice == '3':
         confirm = input("Yakin hapus kartu ini? (y/n): ")
         if confirm.lower() == 'y':
@@ -190,13 +211,29 @@ def card_edit(deck_name):
             set_color(RED)
             print(center_text("Kartu telah dihapus."))
             set_color(WHITE)
+
         else:
             print()
             set_color(RED)
             print(center_text("Operasi dibatalkan."))
             set_color(WHITE)
+            set_color(BRIGHT | YELLOW)
+            wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+            set_color(WHITE)
+            return
     elif choice == '4':
-        reset_times(deck_name)
+        card.due = datetime.now(timezone.utc).isoformat()
+        card.first_time = True
+        card.interval = 1
+        card.step = 1
+        card.ease_factor = 2.5
+        cards = [Card.to_dict(c)for c in cards_raw]
+        save_deck(deck_name, cards)
+        print("Waktu telah direset")
+        set_color(BRIGHT | YELLOW)
+        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+        set_color(WHITE)
+        return
     elif choice == '5':
         return
     elif choice not in ['1','2','3','4','5']:
@@ -282,7 +319,6 @@ def export_deck(deck_name):
         # buka file explorer untuk memilih path
         default_filename = f"{deck_name}.json"
         save_path = select_save_path(default_filename)
-        
         if not save_path:
             set_color(RED)
             print()
