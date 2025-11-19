@@ -4,7 +4,7 @@ import cards
 from datetime import datetime,timezone
 import heapq
 import itertools
-from deck import load_deck, save_deck
+from deck import load_deck, save_deck, save_limit,load_limit
 from cards import card_queue, update_schedule, card_status
 
 from console import (
@@ -263,13 +263,15 @@ def review_menu(deck_name, new, due):
             print()
             new = get_limit(center_text("Masukkan Limit Kartu Baru: ")) 
             due = get_limit(center_text("Masukkan Limit Kartu Jatuh Tempo: "))
+            save_limit(deck_name, new, due)
             return review_menu(deck_name, new, due)        
         elif key == 'ESC':
             return
 
 def show_review_deck(deck_name):
-    new = 20
-    due = 20
+    limit = load_limit(deck_name)
+    new = limit["new_limit"]
+    due = limit["due_limit"]
     review_menu(deck_name, new, due)
 
 

@@ -49,6 +49,24 @@ def load_deck(name: str) -> List[Dict]:
         data = json.load(f)
     return data.get("cards", [])
 
+def load_limit(deck: str):
+    path = deck_file_path(deck)
+    with deck_file_path(deck).open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    if "limit" not in data:
+        data["limit"] = {"new_limit": 20, "due_limit":100}
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    return data.get("limit",{})
+
+def save_limit(deck: str, limit_new: int, limit_due: int):
+    path = deck_file_path(deck)
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    data["limit"] = {"new_limit": limit_new,"due_limit": limit_due}
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent = 2)
+
 def save_deck(name: str, cards: List[Dict]) -> None:
     _ensure_deck_file(name)
     path = deck_file_path(name)
