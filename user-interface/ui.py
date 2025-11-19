@@ -48,7 +48,7 @@ def main_menu(selected_deck, selected_option, deck_mode):
     avail_decks = sorted(load_index().get("decks", []))
 
     # title 
-    header = "================================== Care Card V.1 =================================="
+    header = "================================== Memora =================================="
     set_color(BRIGHT | MAGENTA)
     print(center_text(header))
     print()
@@ -177,6 +177,6 @@ def show_menu():
         elif key == 'ESC':
             clear()
             set_color(BRIGHT | YELLOW)
-            print(center_text("Terima Kasih telah menggunakan Care Card!"))
+            print(center_text("Terima Kasih telah menggunakan Memora!"))
             set_color(WHITE)
             break

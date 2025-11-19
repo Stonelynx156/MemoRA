@@ -24,7 +24,7 @@ h = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 """Panduan Penggunaan"""
 def panduan_penggunaan():
     set_color(BRIGHT | MAGENTA)
-    print(center_text("=========================== Panduan Penggunaan Care Card ==========================="))
+    print(center_text("=========================== Panduan Penggunaan Memora ==========================="))
     print()
     set_color(BRIGHT | WHITE)
     print(center_text("Panduan singkat penggunaan aplikasi (Bahasa Indonesia)"))
@@ -96,7 +96,8 @@ def panduan_penggunaan():
     print(indent + "Jumlah kartu baru bisa diatur di menu kelola deck")
     print(indent + "Kartu lama yang sudah direview akan muncul kembali apabila sudah jatuh tempo")
 
-    set_color(YELLOW)
+    set_color(BRIGHT | YELLOW)
+    print()
     wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
 
 if __name__ == "__main__":
