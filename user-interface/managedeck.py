@@ -15,6 +15,7 @@ from console import (
     set_color,
     center_text,
     wait_for_enter,
+    input_with_esc,
     get_terminal_size,
     monitor_terminal_size,
     wait_for_key_with_resize,
@@ -69,12 +70,18 @@ def deck_summary(deck_name):
     set_color(WHITE)
 
 #tambah kartu baru
-def newcards(deck_name):
+def new_cards(deck_name):
     set_color(BRIGHT | CYAN)
     print(center_text(f"=== Membuat kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
-    front_cards = input("Masukkan pertanyaan (front): ")
+    set_color(BRIGHT | YELLOW)
+    print(center_text("Tekan ESC untuk kembali..."))
+    set_color(WHITE)
+    print()
+    front_cards, canceled = input_with_esc("Masukkan pertanyaan (front): ")
+    if canceled:
+        return
     if not front_cards.strip():
         set_color(RED)
         print()
@@ -83,7 +90,9 @@ def newcards(deck_name):
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
         set_color(WHITE)
         return
-    back_cards = input("Masukkan jawaban (back)    : ")
+    back_cards, canceled = input_with_esc("Masukkan jawaban (back)    : ")
+    if canceled:
+        return
     if not back_cards.strip():
         set_color(RED)
         print()
@@ -94,7 +103,9 @@ def newcards(deck_name):
         return
     add_card(front_cards, back_cards, deck_name)
     print()
+    set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
 #cek daftar kartu
 def card_list(deck_name):
@@ -119,7 +130,13 @@ def card_info(deck_name):
     print(center_text(f"=== Informasi Kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
-    card_id = input("Masukkan ID Kartu: ")
+    set_color(BRIGHT | YELLOW)
+    print(center_text("Tekan ESC untuk kembali..."))
+    set_color(WHITE)
+    print()
+    card_id, canceled = input_with_esc("Masukkan ID Kartu: ")
+    if canceled:
+        return
     for c in cards_raw:
         if c.get("id") == card_id:
             card = c
@@ -151,8 +168,13 @@ def card_edit(deck_name):
     print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
     set_color(WHITE)
     print()
-    card_id = input("Masukkan ID Kartu yang akan diedit: ")
-    #validasi input ID kartu
+    set_color(BRIGHT | YELLOW)
+    print(center_text("Tekan ESC untuk kembali..."))
+    set_color(WHITE)
+    print()
+    card_id, canceled = input_with_esc("Masukkan ID Kartu yang akan diedit: ")
+    if canceled:
+        return
     for c in cards:
         if c.id == card_id:
             card = c
@@ -171,7 +193,6 @@ def card_edit(deck_name):
         "2) Edit Jawaban (back)",
         "3) Reset Waktu Kartu",
         "4) Hapus Kartu",    
-        "5) Kembali",
     ]
 
     while True:
@@ -213,10 +234,15 @@ def card_edit(deck_name):
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
-                print(f"     Pertanyaan Lama: {card.front}")
-                #print pertanyaan lama kartu
+                set_color(BRIGHT | YELLOW)
+                print(center_text("Tekan ESC untuk kembali..."))
+                set_color(WHITE)
                 print()
-                new_front = input("     Masukkan Pertanyaan Baru: ")
+                print(f"     Pertanyaan Lama: {card.front}")
+                print()
+                new_front, canceled = input_with_esc("     Masukkan Pertanyaan Baru: ")
+                if canceled:
+                    continue
                 if not new_front.strip():
                     set_color(RED)
                     print()
@@ -234,9 +260,15 @@ def card_edit(deck_name):
                 print(center_text(f"=== Edit Kartu di: {deck_name} ==="))
                 set_color(WHITE)
                 print()
+                set_color(BRIGHT | YELLOW)
+                print(center_text("Tekan ESC untuk kembali..."))
+                set_color(WHITE)
+                print()
                 print(f"     Jawaban Lama: {card.back}")
-                #print Jawaban lama kartu
-                new_back    = input("     Masukkan jawaban baru   : ")
+                print()
+                new_back, canceled = input_with_esc("     Masukkan jawaban baru   : ")
+                if canceled:
+                    continue
                 if not new_back.strip():
                     set_color(RED)
                     print()
@@ -300,11 +332,6 @@ def card_edit(deck_name):
                     set_color(BRIGHT | YELLOW)
                     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
                     set_color(WHITE)
-                    
-            elif choice == '5':
-                break
-                
-
 
 #reset semua kartu
 def reset_times(deck_name):
@@ -334,7 +361,13 @@ def change_name_deck(deck_name):
     print(center_text(f"=== Ganti Nama Deck: {deck_name} ==="))
     set_color(WHITE)
     print()
-    new_name = input("Masukkan nama deck baru: ")
+    set_color(BRIGHT | YELLOW)
+    print(center_text("Tekan ESC untuk kembali..."))
+    set_color(WHITE)
+    print()
+    new_name, canceled = input_with_esc("Masukkan nama deck baru: ")
+    if canceled:
+        return
     if not new_name.strip():
         set_color(RED)
         print()
@@ -566,7 +599,7 @@ def manage_deck(avail_decks):
                     if choice == 2:
                         card_edit(deck_name)
                     if choice == 3:
-                        newcards(deck_name)
+                        new_cards(deck_name)
                     if choice == 4:
                         card_info(deck_name)
                     if choice == 5:
