@@ -48,6 +48,7 @@ def new_deck():
     
     if deck_name is None or deck_name.strip() == "":
         set_color(BRIGHT | RED)
+        print()
         print(center_text("Nama deck tidak boleh kosong!"))
         print()
         set_color(BRIGHT | YELLOW)
@@ -56,6 +57,7 @@ def new_deck():
         return None
     if deck_name in existing_decks:
         set_color(BRIGHT | RED)
+        print()
         print(center_text(f"Deck dengan nama '{deck_name}' sudah ada!"))
         print()
         set_color(BRIGHT | YELLOW)
@@ -65,6 +67,7 @@ def new_deck():
 
     create_deck(deck_name)
     set_color(BRIGHT | CYAN)
+    print()
     print(center_text(f"Deck '{deck_name}' berhasil dibuat!"))
     set_color(WHITE)
     print()

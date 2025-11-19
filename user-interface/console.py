@@ -103,9 +103,9 @@ def monitor_terminal_size():
             return True
         
         clear()
-        set_color(RED)
+        set_color(BRIGHT | RED)
         print(center_text(f"Ukuran terminal terlalu kecil: {cols}x{rows} (minimal {min_cols}x{min_rows})"))
-        set_color(YELLOW)
+        set_color(BRIGHT | YELLOW)
         print(center_text("Beberapa tampilan mungkin terpotong."))
         print(center_text("Perbesar terminal atau tekan ESC untuk keluar."))
         set_color(WHITE)
@@ -115,7 +115,7 @@ def monitor_terminal_size():
             if k == 'ESC':
                 clear()
                 set_color(BRIGHT | YELLOW)
-                print(center_text("Terima Kasih telah menggunakan Care Card!"))
+                print(center_text("Terima Kasih telah menggunakan Memora!"))
                 set_color(WHITE)
                 return False
         

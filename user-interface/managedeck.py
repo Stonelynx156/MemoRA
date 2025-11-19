@@ -381,7 +381,7 @@ def change_name_deck(deck_name):
     print(center_text("Tekan ESC untuk kembali..."))
     set_color(WHITE)
     print()
-    new_name, canceled = input_with_esc("Masukkan nama deck baru: ")
+    new_name, canceled = input_with_esc("     Masukkan nama deck baru: ")
     if canceled:
         return
     if not new_name.strip():
