@@ -235,10 +235,10 @@ def review_menu(deck_name, new, due):
         bottom_section_height = 3
         print_spacer_before_bottom_options(lines_used, bottom_section_height)
 
-        set_color(BRIGHT | YELLOW)
-        print(center_text("Tekan Enter untuk mulai review"))
         set_color(BRIGHT | BLUE)
         print(center_text("Tekan ESC untuk kembali"))
+        set_color(BRIGHT | YELLOW)
+        print(center_text("Tekan Enter untuk mulai review"))
         set_color(BRIGHT | MAGENTA)
         print(center_text("Tekan TAB untuk pengaturan limit"))
         set_color(WHITE)

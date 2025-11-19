@@ -41,7 +41,7 @@ def new_deck():
     set_color(WHITE)
     print()
 
-    deck_name, canceled = input_with_esc(center_text("Masukkan nama deck baru: "))
+    deck_name, canceled = input_with_esc(("     Masukkan nama deck baru: "))
     existing_decks = sorted(load_index().get("decks", []))
     if canceled:
         return None
