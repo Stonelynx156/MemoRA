@@ -45,7 +45,7 @@ def get_limit(limit):
     except ValueError:
         return None
 
-def display_question(deck_name, question, queue):
+def display_question(deck_name, question, status):
     clear()
     set_color(BRIGHT | BLUE)
     print(center_text(f"=== {deck_name} ==="))
@@ -64,9 +64,9 @@ def display_question(deck_name, question, queue):
     print(center_text(instruction))
     set_color(WHITE)
 
-    new_count = queue[0]
-    review_count = queue[1]
-    due_count = queue[2]
+    new_count = status[0]
+    review_count = status[1]
+    due_count = status[2]
     
     # Buat teks tanpa warna untuk menghitung panjang
     status_text = f"{new_count}   {review_count}   {due_count}"
@@ -163,7 +163,7 @@ def review_deck(deck_name, new, due):
                 if show_answer:
                     display_answer(deck_name, card.front, card.back)
                 else:
-                    display_question(deck_name, card.front)
+                    display_question(deck_name, card.front, status)
                 continue
 
             if not show_answer:

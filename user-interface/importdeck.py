@@ -108,7 +108,7 @@ def import_deck():
             # copy file dan update index
             shutil.copy(file_path, DATA_DIR)
             if name not in decks:
-                decks.append(name)
+                decks.append(name.replace("_"," "))
                 save_index(index)
         except Exception as e:
             set_color(RED)
