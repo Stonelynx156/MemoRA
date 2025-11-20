@@ -48,7 +48,7 @@ def main_menu(selected_deck, selected_option, deck_mode):
     avail_decks = sorted(load_index().get("decks", []))
 
     # title 
-    header = "================================== Memora =================================="
+    header = "================================== MemoRA =================================="
     set_color(BRIGHT | MAGENTA)
     print(center_text(header))
     print()
@@ -122,7 +122,7 @@ def main_menu(selected_deck, selected_option, deck_mode):
 def show_menu():
     selected_deck = 0
     selected_option = 0
-    deck_mode = True
+    deck_mode = False
     
     prev_size = get_terminal_size()
     
@@ -177,6 +177,6 @@ def show_menu():
         elif key == 'ESC':
             clear()
             set_color(BRIGHT | YELLOW)
-            print(center_text("Terima Kasih telah menggunakan Memora!"))
+            print(center_text("Terima Kasih telah menggunakan MemoRA!"))
             set_color(WHITE)
             break

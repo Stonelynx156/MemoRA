@@ -115,7 +115,7 @@ def monitor_terminal_size():
             if k == 'ESC':
                 clear()
                 set_color(BRIGHT | YELLOW)
-                print(center_text("Terima Kasih telah menggunakan Memora!"))
+                print(center_text("Terima Kasih telah menggunakan MemoRA!"))
                 set_color(WHITE)
                 return False
         
