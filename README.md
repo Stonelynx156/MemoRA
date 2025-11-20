@@ -13,6 +13,9 @@ belajar kamu yang didasarkan pada Forgetting Curve. Cocok untuk kamau yang ingin
 dengan cara yang sangat efektif, user interface yang berbasis text sangat membantu dalam menjaga otak kamu 
 untuk tetap fokus. MemoRA, Asisten Pengingatmu!  
 
+Dokumentasi Lengkap MemoRA:
+https://docs.google.com/document/d/1nPY4NCLoKr2NbkmjNIBeKutzQolLMZQ6R8AL00n0ExM/edit?usp=sharing
+
 Disclaimer:
 Aplikasi MemoRA hanya berjalan di platform Windows saja.<br>
 Minimum Requirements : Terinstall Python 3.14 atau lebih tinggi.
