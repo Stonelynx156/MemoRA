@@ -1,6 +1,5 @@
 <h1 align="center">📚 MemoRA — Memory Recall Assistant</h1>
 <p align="center"><b>Aplikasi untuk memudah mengigat, ringan, dan efisien langsung dari terminal.</b></p>
-<p align="center"><b>Disclaimer: Aplikasi Memora hanya ditujukan untuk platform Windows saja.</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-CLI-blue">
@@ -8,10 +7,11 @@
   <img src="https://img.shields.io/badge/License-MIT-green">
 </p>
 
+<p align="center"><b>Disclaimer: Aplikasi MemoRA hanya ditujukan untuk platform Windows saja.</b></p>
 ---
 
-## 📌 Tentang Memora
-**Memora** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program belajar kamu yang menginginkan:
+## 📌 Tentang MemoRA
+**MemoRA** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program belajar kamu yang menginginkan:
 
 - kecepatan  
 - kesederhanaan  
@@ -22,10 +22,10 @@ Aplikasi ini sangat cocok untuk programmer, pengguna terminal, dan siapa pun yan
 
 ---
 
-# ⭐ Keunggulan Memora 
+# ⭐ Keunggulan MemoRA 
 
 ## ⚡ 1. Super Ringan
-**Memora berjalan full di terminal**, cocok untuk:
+**MemoRA berjalan full di terminal**, cocok untuk:
 
 - PC Windows low-spec
 - Pengguna yang suka tampilan sederhana
@@ -34,7 +34,7 @@ Aplikasi ini sangat cocok untuk programmer, pengguna terminal, dan siapa pun yan
 ---
 
 ## 🔥 2. Akses Cepat
-Memora mendukung navigasi super cepat:
+MemoRA mendukung navigasi super cepat:
 
 - Arrow keys  
 - Enter
@@ -46,7 +46,7 @@ Memora mendukung navigasi super cepat:
 
 ## 🧪 3. Fleksibel dan Mudah Dikustomisasi
 Tidak perlu add-on untuk mengubah tampilan
-Memora:
+MemoRA:
 
 - UI seluruhnya berbasis teks  
 - Bisa dimodifikasi lewat kode Python  
@@ -57,7 +57,7 @@ Memora:
 
 ## 🧱 4. Struktur Data Sederhana
 Tidak menggunakan struktur data yang kompleks
-Memora memakai:
+MemoRA memakai:
 
 - JSON format sederhana  
 - Mudah dibaca  
@@ -67,7 +67,7 @@ Memora memakai:
 
 ## 📈 5. Belajar Tanpa Distraksi Visual
 Tidak memiliki tampilan visual yang dapat mengganggu belajar
-Memora hanya fokus pada:
+MemoRA hanya fokus pada:
 
 - Pertanyaan  
 - Jawaban  
@@ -91,7 +91,7 @@ Memora hanya fokus pada:
 # 📦 Instalasi
 ```
 git clone https://github.com/Stonelynx156/festika/tree/main
-cd Memora
+cd MemoRA
 ```
 
 ---
@@ -107,7 +107,7 @@ py main.py
 
 # 🧩 Struktur Folder
 ```
-Memora/
+MemoRA/
 │── utils/
 │   ├── deck.py
 │   └── card.py
