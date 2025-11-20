@@ -42,8 +42,6 @@ Memora mendukung navigasi super cepat:
 - Tab
 - Shortcuts huruf/angka  
 
-➡ *Belajar jadi cepat & fokus.*
-
 ---
 
 ## 🧪 3. Fleksibel dan Mudah Dikustomisasi
@@ -55,8 +53,6 @@ Memora:
 - Bisa dipakai dalam pipeline terminal  
 - Bisa di-automate & di-scripting  
 
-➡ *Benar-benar developer-friendly.*
-
 ---
 
 ## 🧱 4. Struktur Data Sederhana
@@ -66,8 +62,6 @@ Memora memakai:
 - JSON format sederhana  
 - Mudah dibaca  
 - Bisa langsung di-edit dan commit ke Git  
-
-➡ *Tidak ada metadata rumit.*
 
 ---
 
@@ -79,8 +73,6 @@ Memora hanya fokus pada:
 - Jawaban  
 - Review  
 - Progress  
-
-➡ *Minimalis = retensi belajar lebih tinggi.*
 
 ---
 
