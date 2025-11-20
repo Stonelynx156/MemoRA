@@ -1,4 +1,4 @@
-<h1 align="center">📚 Memora — CLI Flashcard System</h1>
+<h1 align="center">📚 MemoRA — Memory Recall Assistant</h1>
 <p align="center"><b>Aplikasi untuk memudah mengigat, ringan, dan efisien langsung dari terminal.</b></p>
 <p align="center"><b>Disclaimer: Aplikasi Memora hanya ditujukan untuk platform Windows saja.</b></p>
 
