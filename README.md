@@ -7,18 +7,15 @@
   <img src="https://img.shields.io/badge/License-MIT-green">
 </p>
 
-<p align="center"><b>Disclaimer: Aplikasi MemoRA hanya ditujukan untuk platform Windows saja.</b></p>
----
-
 ## 📌 Tentang MemoRA
-**MemoRA** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program belajar kamu yang menginginkan:
+**MemoRA** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program 
+belajar kamu yang didasarkan pada Forgetting Curve. Cocok untuk kamau yang ingin belajar / memahami suatu hal
+dengan cara yang sangat efektif, user interface yang berbasis text sangat membantu dalam menjaga otak kamu 
+untuk tetap fokus. MemoRA, Asisten Pengingatmu!  
 
-- kecepatan  
-- kesederhanaan  
-- terminal-based workflow  
-- kontrol penuh tanpa GUI  
-
-Aplikasi ini sangat cocok untuk programmer, pengguna terminal, dan siapa pun yang ingin belajar tanpa distraksi.
+Disclaimer:
+Aplikasi MemoRA hanya berjalan di platform Windows saja.
+Minimum Requirements : Terinstall Python 3.14 atau lebih tinggi.
 
 ---
 
@@ -77,14 +74,13 @@ MemoRA hanya fokus pada:
 ---
 
 # ✨ Fitur Utama
-- Membuat deck
+- Review Deck (Modified SM-2)
 - Keloka Deck
 - Import Deck
-- Review kartu (SM-2 sederhana)
+- Membuat Deck
 - TUI dengan warna
-- Auto terminal-size check
-- Navigation full keyboard (msvcrt)
-- JSON storage sederhana
+- Navigation full keyboard 
+- JSON storage yang mudah dibagikan
 
 ---
 
