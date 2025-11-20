@@ -2,7 +2,7 @@ import os
 import ctypes
 import msvcrt
 import shutil
-from utils.deck import create_deck, load_index
+from utils.deck import create_deck, load_index,deck_file_path
 from console import (
     clear, 
     set_color,
@@ -55,7 +55,7 @@ def new_deck():
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
         set_color(WHITE)
         return None
-    if deck_name in existing_decks:
+    if deck_name in existing_decks or deck_file_path(deck_name).exists():
         set_color(BRIGHT | RED)
         print()
         print(center_text(f"Deck dengan nama '{deck_name}' sudah ada!"))

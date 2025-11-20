@@ -24,7 +24,7 @@ h = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 """Panduan Penggunaan"""
 def panduan_penggunaan():
     set_color(BRIGHT | MAGENTA)
-    print(center_text("=========================== Panduan Penggunaan Memora ==========================="))
+    print(center_text("=========================== Panduan Penggunaan MemoRA ==========================="))
     print()
     set_color(BRIGHT | WHITE)
     print(center_text("Panduan singkat penggunaan aplikasi (Bahasa Indonesia)"))

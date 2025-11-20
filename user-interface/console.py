@@ -58,6 +58,8 @@ def read_key():
         return 'TAB'
     if k == b' ':
         return 'SPASI'
+    if k == b'q' or k == b"Q":
+        return 'q'
     try:
         return ('CHAR', k.decode('utf-8', errors='ignore'))
     except Exception:
@@ -115,7 +117,7 @@ def monitor_terminal_size():
             if k == 'ESC':
                 clear()
                 set_color(BRIGHT | YELLOW)
-                print(center_text("Terima Kasih telah menggunakan Memora!"))
+                print(center_text("Terima Kasih telah menggunakan MemoRA!"))
                 set_color(WHITE)
                 return False
         

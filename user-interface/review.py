@@ -121,29 +121,31 @@ def display_answer(deck_name, question, answer):
     print(center_text(instruction))
     set_color(WHITE)
 
+def no_review(deck_name):
+    clear()
+    set_color(BRIGHT | BLUE)
+    print(center_text(f"=== {deck_name} ==="))
+    print()
+    print()
+    print()
+    set_color(BRIGHT | CYAN)
+    print(center_text("Selamat! Kamu sudah menyelesaikan dek ini untuk sekarang. "))
+    print(center_text("Kamu bisa mengubah maksimal kartu baru per hari saat memilih deck!"))
+    set_color(BRIGHT | YELLOW)
+    print()
+    wait_for_enter(center_text("Tekan Enter untuk kembali..."))
+    set_color(WHITE)
 
-def review_deck(deck_name, new, due):
+def review_deck(deck_name, new, due, init):
     prev_size = get_terminal_size()
     show_answer = False
     cards_raw = load_deck(deck_name)
     counter = itertools.count()
     queue = card_queue(deck_name, new, due)
     # Tampilkan pertanyaan pertama kali
-    
     if not queue:
-        clear()
-        set_color(BRIGHT | BLUE)
-        print(center_text(f"=== {deck_name} ==="))
-        print()
-        print()
-        print()
-        set_color(BRIGHT | CYAN)
-        print(center_text("Selamat! Kamu sudah menyelesaikan dek ini untuk sekarang. "))
-        print(center_text("Kamu bisa mengubah maksimal kartu baru per hari saat memilih deck!"))
-        set_color(BRIGHT | YELLOW)
-        print()
-        wait_for_enter(center_text("Tekan Enter untuk kembali..."))
-        set_color(WHITE)
+        no_review(deck_name)
+        return
     
     while queue:
         status = card_status(queue)
@@ -186,35 +188,38 @@ def review_deck(deck_name, new, due):
                     if char in ['1', '2', '3', '4']:
                         # Handle rating (bisa ditambahkan logika update card di sini)
                         quality = int(char) - 1
+                        if card.first_time == True:
+                            if limit["due_limit"] is not None and limit["due_limit"]> 0: 
+                                due = limit["due_limit"] - 1
+                        if datetime.fromisoformat(card.due) <= datetime.now(timezone.utc):
+                            if limit["new_limit"] is not None and limit["new_limit"]> 0 : 
+                                new = limit["new_limit"] - 1 
                         update_schedule(card, quality)
                         if card.step <= 3:
                             due_dt = card.due if isinstance(card.due, datetime) else datetime.fromisoformat(card.due)
                             heapq.heappush(queue, (due_dt,next(counter), card))
                             
-                        elif card.step > 3:
-                            if limit["due_limit"] and limit["due_limit"]> 0: 
-                                due = limit["due_limit"] - 1
-                            if limit["new_limit"] and limit["new_limit"]> 0 : 
-                                new = limit["new_limit"] - 1 
                         for idx, stored in enumerate(cards_raw):
                             if stored["id"] == card.id:
                                 cards_raw[idx] = card.to_dict()                        
                         save_deck(deck_name, cards_raw)
-                        load_limit(deck_name)
-                        save_limit(deck_name, new, due)
+                        save_limit(deck_name, new, due, init)
                         break
-                        # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya
+                        # Untuk sekarang, kembali ke pertanyaan atau lanjut ke kartu berikutnya   
     queue = card_queue(deck_name)
+    no_review(deck_name)
     return
 
 def review_menu(deck_name, new, due):
     """Menu review deck - menampilkan statistik dan opsi untuk mulai review"""
     prev_size = get_terminal_size()
-
     while True:
         limit = load_limit(deck_name)
         new = limit["new_limit"]
         due = limit["due_limit"]
+        init = limit["init"]
+        init_new = init[0]
+        init_due = init[1]
         queue = card_queue(deck_name, new, due)
         clear()
         
@@ -260,7 +265,7 @@ def review_menu(deck_name, new, due):
         # Mulai sesi review
         if key == 'ENTER':
             print
-            review_deck(deck_name, new, due)
+            review_deck(deck_name, new, due, init)
         elif key == 'TAB':
             clear()
             set_color(BRIGHT | BLUE)
@@ -271,13 +276,38 @@ def review_menu(deck_name, new, due):
             print()
             new_limit = get_limit(center_text("Masukkan Limit Kartu Baru: ")) 
             due_limit = get_limit(center_text("Masukkan Limit Kartu Jatuh Tempo: "))
-            if new_limit is int and new_limit >= 0:
-                new += new_limit
-            else: new = new_limit
-            if due_limit is int and new_limit >= 0:
-                due += due_limit    
-            else: due = due_limit
-            save_limit(deck_name, new, due)
+            
+            if datetime.fromisoformat(limit["date"]) <= datetime.now(timezone.utc):
+                new = new_limit
+                due = due_limit
+                save_limit(deck_name, new, due,[new, due])
+            else:    
+                if new_limit and new_limit >= 0 and init_new and new:
+                    d_new = new_limit - init_new
+                    if d_new > 0:
+                        new += new_limit - init_new
+                    elif init_new - new_limit > 0 and new > 0:
+                        new = new_limit
+                    else: new = new
+                elif new_limit is None: new = new_limit
+                else: 
+                    new = new_limit - init_new 
+                    if new < 0: new = 0 
+                if due_limit and due_limit >= 0 and init_due and due:
+                    d_due = due_limit - init_due
+                    if d_due > 0:
+                        due += due_limit - init_due
+                    elif init_due - due_limit > 0 and due > 0:
+                        due = due_limit
+                    else: due = due
+                elif due_limit is None: due = due_limit
+                else: 
+                    due = due_limit - init_due
+                    if due < 0: due =0
+                if new or due:
+                    save_limit(deck_name, new, due,[new, due])
+                else:
+                    save_limit(deck_name, new, due,[init_new, init_due])
             return review_menu(deck_name, new, due)        
         elif key == 'ESC':
             return
@@ -286,6 +316,7 @@ def show_review_deck(deck_name):
     limit = load_limit(deck_name)
     new = limit["new_limit"]
     due = limit["due_limit"]
+    
     review_menu(deck_name, new, due)
 
 
