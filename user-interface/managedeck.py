@@ -529,13 +529,7 @@ def manage_deck(avail_decks):
         print()
 
         count = len(avail_decks)
-        window = min(MAX_VISIBLE, count) if count > 0 else 1
-
-        #keep selected visible
-        if selected < top:
-            top = selected
-        if selected >= top + window:
-            top = selected - window + 1
+        window = min(MAX_VISIBLE, count) if count > 0 else 1    
 
         #show deck
         if count == 0:
@@ -640,6 +634,7 @@ def manage_deck(avail_decks):
                         export_deck(deck_name)
                     if choice == 9:
                         if remove_deck(deck_name):
+                            selected = 0
                             break
 
                 else:
