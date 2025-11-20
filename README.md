@@ -1,5 +1,6 @@
 <h1 align="center">📚 Memora — CLI Flashcard System</h1>
 <p align="center"><b>Aplikasi untuk memudah mengigat, ringan, dan efisien langsung dari terminal.</b></p>
+<p align="center"><b>Disclaimer: Aplikasi Memora hanya ditujukan untuk platform Windows saja.</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-CLI-blue">
@@ -23,22 +24,22 @@ Aplikasi ini sangat cocok untuk programmer, pengguna terminal, dan siapa pun yan
 
 # ⭐ Keunggulan Memora 
 
-## ⚡ 1. Super Ringan — Tidak Butuh GUI Sama Sekali
+## ⚡ 1. Super Ringan
 **Memora berjalan full di terminal**, cocok untuk:
 
 - PC Windows low-spec
-- Pengguna yang suka tampilan sederhana  
-
-
-➡ *Tidak ada loading GUI, langsung jalan.*
+- Pengguna yang suka tampilan sederhana
+- Pengguna yang perlu input/output responsif  
 
 ---
 
-## 🔥 2. Akses Sangat Cepat — Keyboard-Only Navigation
+## 🔥 2. Akses Cepat
 Memora mendukung navigasi super cepat:
 
 - Arrow keys  
-- Enter  
+- Enter
+- Esc
+- Tab
 - Shortcuts huruf/angka  
 
 ➡ *Belajar jadi cepat & fokus.*
@@ -74,42 +75,12 @@ Memora memakai:
 Tidak memiliki tampilan visual yang dapat mengganggu belajar
 Memora hanya fokus pada:
 
-- pertanyaan  
-- jawaban  
-- review  
-- progress  
+- Pertanyaan  
+- Jawaban  
+- Review  
+- Progress  
 
 ➡ *Minimalis = retensi belajar lebih tinggi.*
-
----
-
-## 💻 6. Terminal-Aware + Responsive TUI
-Memora mendukung fitur yang bahkan Anki tidak miliki:
-
-- auto detect ukuran terminal  
-- spacer vertikal dinamis  
-- highlight warna (ANSI / WinAPI)  
-- TUI yang responsif  
-
-➡ *Tetap tertata rapi meskipun terminal berubah ukuran.*
-
----
-
-## 🔒 7. Tidak Ada Telemetry
-Memora **100% tanpa tracking**, tanpa internet, tanpa data usage.
-
-➡ *Privasi penuh.*
-
----
-
----
-
-# 🚀 Demo Singkat
-*(Tambahkan GIF nanti jika ada)*
-
-```
-python main.py
-```
 
 ---
 
@@ -129,7 +100,6 @@ python main.py
 ```
 git clone https://github.com/Stonelynx156/festika/tree/main
 cd Memora
-python main.py
 ```
 
 ---
