@@ -4,6 +4,7 @@ import msvcrt
 import shutil
 import json
 import time
+import webbrowser
 from tkinter import Tk, filedialog
 
 from datetime import datetime, timezone
@@ -506,7 +507,6 @@ def remove_deck(deck_name):
                         
 """Manajemen Deck"""
 def manage_deck(avail_decks):
-    MAX_VISIBLE = 10
     if avail_decks is None:
         avail_decks = []
 
@@ -524,12 +524,12 @@ def manage_deck(avail_decks):
         print(center_text("================================== Manajemen Deck =================================="))
         print()
         set_color(BRIGHT | YELLOW)
-        print(center_text("ESC: Kembali | ↑/↓: Pilih | Enter: Kelola deck"))
+        print(center_text("ESC: Kembali | ↑/↓: Pilih | Enter: Kelola deck | 'Q': Membuka Online Shared Deck"))
         set_color(WHITE)
         print()
 
         count = len(avail_decks)
-        window = min(MAX_VISIBLE, count) if count > 0 else 1    
+        window = count if count > 0 else 1
 
         #show deck
         if count == 0:
@@ -546,37 +546,40 @@ def manage_deck(avail_decks):
                 else:
                     print(center_text(f"  • {name}"))
 
-        #hint if hidden
-        hidden = max(0, count - window)
-        if hidden > 0:
-            print()
-            set_color(BLUE)
-            print(center_text(f"...dan {hidden} deck lainnya tidak ditampilkan (maks {MAX_VISIBLE})"))
-            set_color(WHITE)
-
         #input key
-        k, prev_size = wait_for_key_with_resize(prev_size)
-        if k == EXIT_TOKEN:
+        key, prev_size = wait_for_key_with_resize(prev_size)
+        if key == EXIT_TOKEN:
             return
-        if k is None:
+        if key is None:
             continue
-        if k == 'UP':
+        if key == 'UP':
             if selected > 0:
                 selected -= 1
-        elif k == 'DOWN':
+        elif key == 'DOWN':
             if selected < max(0, count - 1):
                 selected += 1
-        elif k == 'ESC':
-            return  # back to main menu
-        elif k == 'ENTER':
+        elif key == 'ESC':
+            return  
+        elif key == 'q':
+            clear()
+            print()
+            set_color(RED)
+            confirm = input(center_text("Apakah kamu ingin membuka kumpulan deck online (y/n): "))
+            if confirm == 'y':
+                url = "https://github.com/Stonelynx156/MemoRA/tree/shared-decks"
+                webbrowser.open(url)
+                set_color(WHITE)
+        elif key == 'ENTER':
             if count == 0:
                 set_color(RED)
                 print()
-                print(center_text("Tidak ada deck untuk dikelola. Tekan Enter untuk kembali..."))
-                set_color(WHITE)
-                wait_for_enter()
+                print(center_text("Tidak ada deck untuk dikelola"))
+                confirm = input(center_text("Apakah kamu ingin membuka kumpulan deck online (y/n): "))
+                if confirm == 'y':
+                    url = "https://github.com/Stonelynx156/MemoRA/tree/shared-decks"
+                    webbrowser.open(url)
+                    set_color(WHITE)
                 return
-
             deck_name = avail_decks[selected]
             #submenu ketika sudah pilih deck
             opt_selected = 0
