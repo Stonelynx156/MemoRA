@@ -190,10 +190,10 @@ def review_deck(deck_name, new, due, init):
                         quality = int(char) - 1
                         if card.first_time == True:
                             if limit["due_limit"] is not None and limit["due_limit"]> 0: 
-                                due = limit["due_limit"] - 1
-                        if datetime.fromisoformat(card.due) <= datetime.now(timezone.utc):
+                                new = limit["new_limit"] - 1
+                        if datetime.fromisoformat(card.due) <= datetime.now(timezone.utc) and card.first_time == False:
                             if limit["new_limit"] is not None and limit["new_limit"]> 0 : 
-                                new = limit["new_limit"] - 1 
+                                due = limit["due_limit"] - 1 
                         update_schedule(card, quality)
                         if card.step <= 3:
                             due_dt = card.due if isinstance(card.due, datetime) else datetime.fromisoformat(card.due)
@@ -276,41 +276,41 @@ def review_menu(deck_name, new, due):
             print()
             new_limit = get_limit(center_text("Masukkan Limit Kartu Baru: ")) 
             due_limit = get_limit(center_text("Masukkan Limit Kartu Jatuh Tempo: "))
-            
-            if datetime.fromisoformat(limit["date"]) <= datetime.now(timezone.utc):
-                new = new_limit
-                due = due_limit
-                save_limit(deck_name, new, due,[new, due])
-            else:    
-                if new_limit and new_limit >= 0 and init_new and new:
-                    d_new = new_limit - init_new
-                    if d_new > 0:
-                        new += new_limit - init_new
-                    elif init_new - new_limit > 0 and new > 0:
-                        new = new_limit
-                    else: new = new
-                elif new_limit is None: new = new_limit
-                else: 
-                    new = new_limit - init_new 
-                    if new < 0: new = 0 
-                if due_limit and due_limit >= 0 and init_due and due:
-                    d_due = due_limit - init_due
-                    if d_due > 0:
-                        due += due_limit - init_due
-                    elif init_due - due_limit > 0 and due > 0:
-                        due = due_limit
-                    else: due = due
-                elif due_limit is None: due = due_limit
-                else: 
-                    due = due_limit - init_due
-                    if due < 0: due =0
-                if new or due:
-                    save_limit(deck_name, new, due,[new, due])
-                else:
-                    save_limit(deck_name, new, due,[init_new, init_due])
-            return review_menu(deck_name, new, due)        
+            new_day = datetime.fromisoformat(limit["date"]) <= datetime.now(timezone.utc)
+            new_config, new_remaining = adjust_limit(new_limit, init_new, new, new_day)
+            due_config, due_remaining = adjust_limit(due_limit, init_due, due, new_day)
+
+            save_limit(deck_name, new_remaining, due_remaining, [new_config, due_config])
+
+            return review_menu(deck_name, new_remaining, due_remaining)      
         elif key == 'ESC':
             return
+        
+def adjust_limit(new_val, init_val, remaining_value, is_new_day):
+    MAX_LIMIT = 9999  # acts as "unlimited"
+
+    # If empty → no limit
+    if new_val is None:
+        return MAX_LIMIT, MAX_LIMIT
+
+    # New day resets remaining = configured
+    if is_new_day:
+        return new_val, new_val
+
+
+    # User increases limit → remaining increases by difference
+    if new_val > init_val:
+        diff = new_val - init_val
+        return new_val, remaining_value + diff
+
+    # User decreases limit → remaining does NOT change
+    if new_val < init_val:
+        if remaining_value - new_val > 0:
+            return new_val, new_val
+        else: return new_val, 0
+    # No change
+    return init_val, remaining_value
+
 
 def show_review_deck(deck_name):
     limit = load_limit(deck_name)

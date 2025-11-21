@@ -393,7 +393,7 @@ def change_name_deck(deck_name):
         set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali..."))
         set_color(WHITE)
-        return
+        return False
     if new_name in existing_decks:
         set_color(BRIGHT | RED)
         print()
@@ -402,7 +402,7 @@ def change_name_deck(deck_name):
         set_color(BRIGHT | YELLOW)
         wait_for_enter(center_text("Tekan Enter untuk kembali ke menu..."))
         set_color(WHITE)
-        return None
+        return False
     rename_deck(deck_name, new_name)
     print()
     print(center_text(f"Nama deck telah diubah menjadi: {new_name}"))
@@ -410,6 +410,7 @@ def change_name_deck(deck_name):
     set_color(BRIGHT | YELLOW)
     wait_for_enter(center_text("Tekan Enter untuk kembali..."))
     set_color(WHITE)
+    return True
 
 #ekspor deck
 def export_deck(deck_name):
@@ -632,7 +633,8 @@ def manage_deck(avail_decks):
                     if choice == 6:
                         reset_times(deck_name)
                     if choice == 7:
-                        change_name_deck(deck_name)
+                        if change_name_deck(deck_name):
+                            return
                     if choice == 8:
                         export_deck(deck_name)
                     if choice == 9:
