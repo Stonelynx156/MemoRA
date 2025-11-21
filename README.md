@@ -97,9 +97,9 @@ cd MemoRA
 
 # ▶️ Cara Menjalankan
 ```
-python main.py
+python memora.py
 atau
-py main.py
+py memora.py
 ```
 
 ---
