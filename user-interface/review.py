@@ -287,28 +287,23 @@ def review_menu(deck_name, new, due):
             return
         
 def adjust_limit(new_val, init_val, remaining_value, is_new_day):
-    MAX_LIMIT = 9999  # acts as "unlimited"
+    MAX_LIMIT = 9999 
 
-    # If empty → no limit
     if new_val is None:
         return MAX_LIMIT, MAX_LIMIT
 
-    # New day resets remaining = configured
     if is_new_day:
         return new_val, new_val
 
-
-    # User increases limit → remaining increases by difference
     if new_val > init_val:
         diff = new_val - init_val
         return new_val, remaining_value + diff
 
-    # User decreases limit → remaining does NOT change
     if new_val < init_val:
         if remaining_value - new_val > 0:
             return new_val, new_val
         else: return new_val, 0
-    # No change
+        
     return init_val, remaining_value
 
 
