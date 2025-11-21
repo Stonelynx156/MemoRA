@@ -9,7 +9,7 @@
 
 ## 📌 Tentang MemoRA
 **MemoRA** adalah aplikasi flashcard berbasis **Command Line Interface (CLI)** yang dirancang sebagai program 
-belajar kamu yang didasarkan pada Forgetting Curve. Cocok untuk kamau yang ingin belajar / memahami suatu hal
+belajar kamu, didasarkan pada Forgetting Curve. Cocok untuk kamu yang ingin belajar / memahami suatu hal
 dengan cara yang sangat efektif, user interface yang berbasis text sangat membantu dalam menjaga otak kamu 
 untuk tetap fokus. MemoRA, Asisten Pengingatmu!  
 
