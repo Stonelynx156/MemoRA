@@ -60,7 +60,7 @@ Tidak menggunakan struktur data yang kompleks
 MemoRA memakai:
 
 - JSON format sederhana  
-- Mudah dibaca  
+- Mudah dibaca dan dipublikasikan 
 - Bisa langsung di-edit dan commit ke Git  
 
 ---
