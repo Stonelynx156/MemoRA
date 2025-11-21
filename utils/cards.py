@@ -106,7 +106,7 @@ def add_card(front, back, deck_name: str):
     save_deck(deck_name, deck)
 
 #start studying session
-def card_queue(deck_name: str, new_limit: int = None, due_limit: int = None):
+def card_queue(deck_name: str, new_limit: int = 9999, due_limit: int = 9999):
     cards_raw = load_deck(deck_name)
     cards = [Card.from_dict(c) for c in cards_raw]
     now = _now()
